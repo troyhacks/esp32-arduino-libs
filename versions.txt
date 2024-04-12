@@ -1,7 +1,7 @@
 lib-builder: master e38c27a
 esp-idf: release/v5.1 d23b7a0361
 arduino: idf-release/v5.1 1b0d8c81
-tinyusb: master 6144da960
+tinyusb: master d816a9bdf
 chmorgan__esp-libhelix-mp3: 1.0.3
 espressif__cbor: 0.6.0~1
 espressif__esp-dl:
