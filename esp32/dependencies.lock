@@ -73,6 +73,12 @@ dependencies:
       service_url: https://api.components.espressif.com/
       type: service
     version: 1.1.0
+  espressif/esp_modem:
+    component_hash: e48da33fee082dd9d9a97a354a228057e07a14ac108766b40ad84e018205410a
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.1.0
   espressif/esp_rainmaker:
     component_hash: 232425d1c9b9dbdaa5c109b3e359fba0e6956e35fcf22725f07ed7e4389e1191
     source:
@@ -138,6 +144,6 @@ dependencies:
       service_url: https://api.components.espressif.com/
       type: service
     version: 1.14.4
-manifest_hash: 8fa0daeff968edb663294a10f8a51ccec8568cb22aa78ec98b301e68487e101a
+manifest_hash: 404cf7a30b8313747440b1ded298bdd6955c65aa133f512cc03cb8eeee7f56ac
 target: esp32
 version: 1.0.0
