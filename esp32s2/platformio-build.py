@@ -285,6 +285,8 @@ env.Append(
         join(FRAMEWORK_SDK_DIR, "esp32s2", "include", "touch_element", "include"),
         join(FRAMEWORK_SDK_DIR, "esp32s2", "include", "ulp", "ulp_common", "include"),
         join(FRAMEWORK_SDK_DIR, "esp32s2", "include", "ulp", "ulp_common", "include", "esp32s2"),
+        join(FRAMEWORK_SDK_DIR, "esp32s2", "include", "ulp", "ulp_fsm", "include"),
+        join(FRAMEWORK_SDK_DIR, "esp32s2", "include", "ulp", "ulp_fsm", "include", "esp32s2"),
         join(FRAMEWORK_SDK_DIR, "esp32s2", "include", "usb", "include"),
         join(FRAMEWORK_SDK_DIR, "esp32s2", "include", "wifi_provisioning", "include"),
         join(FRAMEWORK_SDK_DIR, "esp32s2", "include", "espressif__esp-nn", "include"),

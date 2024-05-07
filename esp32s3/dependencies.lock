@@ -12,12 +12,12 @@ dependencies:
       type: service
     version: 0.6.0~1
   espressif/esp-dl:
-    component_hash: d327d2ba17ded74c7385e52d5b07033ea215209a63f5c80c831857961b5cf3de
+    component_hash: deb974793d8a2b37b626c29d5e3d0f59990fe7c9e63bdb6d66377a2864e17bd5
     source:
       git: https://github.com/espressif/esp-dl.git
       path: .
       type: git
-    version: 97e1c52262f5a29c14bdb4ee784b935bd81d1324
+    version: ca99d1c001e5d71a48ea8fed0c5634710d39e514
   espressif/esp-dsp:
     component_hash: 3e7bbd487f1357a1d4944d0c85966d049501ea281b8a4c7f93f7cfedd5b7f23d
     source:
@@ -31,11 +31,11 @@ dependencies:
       type: service
     version: 1.0.2
   espressif/esp-sr:
-    component_hash: f2e0e9316ecd263a43f1a0f41578cd363bb41d77b78f8944e0a721232ecb84fc
+    component_hash: 16af25295f531495fe7e36cf2e8c8bb49629be42c38a56f55f4ded825ada0ffc
     source:
       service_url: https://api.components.espressif.com/
       type: service
-    version: 1.7.0
+    version: 1.7.1
   espressif/esp-tflite-micro:
     component_hash: ffe40b7edc5f407f82a55047b7269c036c25106ff830fb9b3231f3b7fecb4915
     source:
