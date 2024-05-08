@@ -60,8 +60,8 @@ MEMORY
 
      Start of RTC slow memory is reserved for ULP co-processor code + data, if enabled.
   */
-  rtc_slow_seg(RW) : org = 0x50000000 + 4096,
-                                     len = 0x2000 - 4096
+  rtc_slow_seg(RW) : org = 0x50000000 + 512,
+                                     len = 0x2000 - 512
   /* RTC fast memory (same block as above, rtc_iram_seg), viewed from data bus */
   rtc_data_seg(RW) : org = 0x3ff9e000, len = 0x2000 - ((0x10) + (24))
   /* We reduced the size of rtc_data_seg and rtc_iram_seg by RESERVE_RTC_MEM value.

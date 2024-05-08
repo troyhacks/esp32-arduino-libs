@@ -1,4 +1,4 @@
-lib-builder: master fabe7af
+lib-builder: master fee3c87
 esp-idf: release/v5.1 d06c758489
 arduino: master 789b1a84
 tinyusb: master 74e57499b
