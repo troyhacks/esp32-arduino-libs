@@ -242,6 +242,7 @@ env.Append(
         join(FRAMEWORK_SDK_DIR, "esp32c6", "include", "bt", "common", "api", "include", "api"),
         join(FRAMEWORK_SDK_DIR, "esp32c6", "include", "bt", "common", "btc", "profile", "esp", "blufi", "include"),
         join(FRAMEWORK_SDK_DIR, "esp32c6", "include", "bt", "common", "btc", "profile", "esp", "include"),
+        join(FRAMEWORK_SDK_DIR, "esp32c6", "include", "bt", "common", "hci_log", "include"),
         join(FRAMEWORK_SDK_DIR, "esp32c6", "include", "bt", "host", "bluedroid", "api", "include", "api"),
         join(FRAMEWORK_SDK_DIR, "esp32c6", "include", "bt", "esp_ble_mesh", "mesh_common", "include"),
         join(FRAMEWORK_SDK_DIR, "esp32c6", "include", "bt", "esp_ble_mesh", "mesh_common", "tinycrypt", "include"),
@@ -372,7 +373,7 @@ env.Append(
 
     CPPDEFINES=[
         "ESP_PLATFORM",
-        ("IDF_VER", '\\"v5.1.4-51-g442a798083-dirty\\"'),
+        ("IDF_VER", '\\"v5.1.4-192-g0a68361c35-dirty\\"'),
         ("MBEDTLS_CONFIG_FILE", '\\"mbedtls/esp_config.h\\"'),
         ("SOC_MMU_PAGE_SIZE", 'CONFIG_MMU_PAGE_SIZE'),
         "UNITY_INCLUDE_CONFIG_H",
