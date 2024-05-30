@@ -1,4 +1,4 @@
-lib-builder: master 082c36f
+lib-builder: master 2c67e84
 esp-idf: release/v5.1 ebe0b3f40c
 arduino: master c16a3254
 tinyusb: master d10b65ada
