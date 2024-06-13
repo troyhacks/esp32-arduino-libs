@@ -24,11 +24,11 @@ dependencies:
       type: service
     version: 1.0.2
   espressif/esp-tflite-micro:
-    component_hash: 0b5683347a5a72ead8da192f34efb16cff3177373ceed5315dc4610cf5e16b8d
+    component_hash: 28c9fd43c9896bd8676c0b5bfa73598e58f421d04e1a46be788d27a71c9b4cec
     source:
       service_url: https://api.components.espressif.com/
       type: service
-    version: 1.3.0
+    version: 1.3.1
   espressif/esp-zboss-lib:
     component_hash: c7020f631cd4ad25e159ddb812bdc80906b5b424457abc81c9b8b0e92687837a
     source:
@@ -101,12 +101,18 @@ dependencies:
       service_url: https://api.components.espressif.com/
       type: service
     version: 1.0.3
-  espressif/mdns:
-    component_hash: ed10ef031bce505e423c5dbf0fdf2ce7a02df5f9ebffb18df2d6b9852e48817d
+  espressif/libsodium:
+    component_hash: f6e982479a2389cb6868e8fb761cf23aba6c355a8090b3e906299807775f58a3
     source:
       service_url: https://api.components.espressif.com/
       type: service
-    version: 1.3.1
+    version: 1.0.20~1
+  espressif/mdns:
+    component_hash: 31117d76cae83a6d83ffd7f035f6fdae5bd05b914fc30b641afeb208b84de19a
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.3.2
   espressif/qrcode:
     component_hash: 3b493771bc5d6ad30cbf87c25bf784aada8a08c941504355b55d6b75518ed7bc
     source:
@@ -130,6 +136,6 @@ dependencies:
       service_url: https://api.components.espressif.com/
       type: service
     version: 1.14.5
-manifest_hash: 61d3f6849173ad638b506c39b605356d249db5ba9954c2d76b09a0cf8cafd22c
+manifest_hash: b3b5953e4c2a7dcf46d004dc198f48ab8b7f6add83335654783f746291abfe66
 target: esp32c6
 version: 1.0.0
