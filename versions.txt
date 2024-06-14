@@ -1,11 +1,12 @@
 lib-builder: master 4b47beb
-esp-idf: release/v5.1 b9707a371c
-arduino: master 849ec57c
+esp-idf: release/v5.1 e3c4c76b17
+arduino: master cbf1e94d
 tinyusb: master ba2f2299c
 chmorgan__esp-libhelix-mp3: 1.0.3
 espressif__cbor: 0.6.0~1
 espressif__esp-dl:
 espressif__esp-dsp: 1.4.12
+espressif__esp-modbus: 1.0.15
 espressif__esp-nn: 1.0.2
 espressif__esp-sr: 1.7.1
 espressif__esp-tflite-micro: 1.3.1

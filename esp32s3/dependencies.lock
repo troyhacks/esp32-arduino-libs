@@ -24,6 +24,12 @@ dependencies:
       service_url: https://api.components.espressif.com/
       type: service
     version: 1.4.12
+  espressif/esp-modbus:
+    component_hash: ec567c912fbd8b08648ba72b5562df012482584918fb4af670e57025fc30ea42
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.0.15
   espressif/esp-nn:
     component_hash: b32869798bdb40dec6bc99caca48cd65d42f8a9f506b9ab9c598a076f891ede9
     source:
@@ -156,6 +162,6 @@ dependencies:
       service_url: https://api.components.espressif.com/
       type: service
     version: 1.14.5
-manifest_hash: e400c60508082d09978059ccdd1fc297e03b83f8b704668bfbf7a0a251b79f3a
+manifest_hash: 491398dcd819580bff7e46d9bd841ecbe20eabd7d2a8a4d2b0a56bb5d618bf67
 target: esp32s3
 version: 1.0.0
