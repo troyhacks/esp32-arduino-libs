@@ -72,17 +72,17 @@ dependencies:
       type: service
     version: 1.1.0
   espressif/esp_rainmaker:
-    component_hash: 232425d1c9b9dbdaa5c109b3e359fba0e6956e35fcf22725f07ed7e4389e1191
+    component_hash: 25008c033cd20c99eedf86b42e12d35723f59a02cc577b7d5fc3b683864a72ff
     source:
       service_url: https://api.components.espressif.com/
       type: service
-    version: 1.1.0
+    version: 1.2.0
   espressif/esp_schedule:
-    component_hash: 80d3694717a537156f61a072dfe1d1498a2a4f32819a5735bf8a50bcadf79941
+    component_hash: e202a9c688f7f1ab601efb91d682e4bcfaebc508dcceee1a1e0a0d2d1ca75a26
     source:
       service_url: https://api.components.espressif.com/
       type: service
-    version: 1.1.1
+    version: 1.2.0
   espressif/esp_secure_cert_mgr:
     component_hash: a20007d67e65a000670ab77e45d7554c943eb8dcb0abeada0a57dd9adac3a703
     source:
@@ -137,11 +137,11 @@ dependencies:
       type: idf
     version: 5.1.4
   joltwallet/littlefs:
-    component_hash: 8373229a6c63ccc08747117cd937b35de5721ba49468e4ca29dad006235e655e
+    component_hash: 82fe9d7d57b5b95d29532aec744f3cfdf9ae1775ac0ca52ac61fc6dd7cf53dba
     source:
       service_url: https://api.components.espressif.com/
       type: service
-    version: 1.14.5
+    version: 1.14.6
 manifest_hash: 7f8ab1f12a7d29a53adbb33abf9849f8cc00f9edd39bcfb8e28d4667273c28cd
 target: esp32c3
 version: 1.0.0

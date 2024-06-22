@@ -211,6 +211,36 @@ typedef struct {
     int8_t reset_reboot_seconds;
 } esp_rmaker_system_serv_config_t;
 
+
+/** Parameter write request payload */
+typedef struct {
+    /** Parameter handle */
+    esp_rmaker_param_t *param;
+    /** Value to write */
+    esp_rmaker_param_val_t val;
+} esp_rmaker_param_write_req_t;
+
+/** Callback for bulk parameter value write requests.
+ *
+ *
+ * This callback is recommended over esp_rmaker_device_write_cb_t since it gives all values of a given device together,
+ * which will help if the parameters are related to each other.
+ *
+ * The callback should call the esp_rmaker_param_update_and_report() API if the new value is to be set
+ * and reported back.
+ *
+ * @param[in] device Device handle.
+ * @param[in] write_reqs Array of parameter write request payloads.
+ * @param[in] count Count of parameters and their values passed to this callback
+ * @param[in] priv_data Pointer to the private data paassed while creating the device.
+ * @param[in] ctx Context associated with the request.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+typedef esp_err_t (*esp_rmaker_device_bulk_write_cb_t)(const esp_rmaker_device_t *device, const esp_rmaker_param_write_req_t write_req[],
+        uint8_t count, void *priv_data, esp_rmaker_write_ctx_t *ctx);
+
 /** Callback for parameter value write requests.
  *
  * The callback should call the esp_rmaker_param_update_and_report() API if the new value is to be set
@@ -218,7 +248,7 @@ typedef struct {
  *
  * @param[in] device Device handle.
  * @param[in] param Parameter handle.
- * @param[in] param Pointer to \ref esp_rmaker_param_val_t. Use appropriate elements as per the value type.
+ * @param[in] val Pointer to \ref esp_rmaker_param_val_t. Use appropriate elements as per the value type.
  * @param[in] priv_data Pointer to the private data paassed while creating the device.
  * @param[in] ctx Context associated with the request.
  *
@@ -228,13 +258,33 @@ typedef struct {
 typedef esp_err_t (*esp_rmaker_device_write_cb_t)(const esp_rmaker_device_t *device, const esp_rmaker_param_t *param,
         const esp_rmaker_param_val_t val, void *priv_data, esp_rmaker_write_ctx_t *ctx);
 
-/** Callback for parameter value changes
+/** Callback for bulk parameter value reads
  *
  * The callback should call the esp_rmaker_param_update_and_report() API if the new value is to be set
  * and reported back.
  *
  * @note Currently, the read callback never gets invoked as the communication between clients (mobile phones, CLI, etc.)
- * and node is asynchronous. So, the read request does not reach the node. This callback will however be used in future.
+ * and node is asynchronous. So, the read request does not reach the node. This callback may however be used in future.
+ *
+ * @param[in] device Device handle.
+ * @param[in] params Array of Parameter handles.
+ * @param[in] count Count of parameters passed to this callback.
+ * @param[in] priv_data Pointer to the private data passed while creating the device.
+ * @param[in] ctx Context associated with the request.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+typedef esp_err_t (*esp_rmaker_device_bulk_read_cb_t)(const esp_rmaker_device_t *device, const esp_rmaker_param_t *params[],
+        uint8_t count, void *priv_data, esp_rmaker_read_ctx_t *ctx);
+
+/** Callback for parameter value reads
+ *
+ * The callback should call the esp_rmaker_param_update_and_report() API if the new value is to be set
+ * and reported back.
+ *
+ * @note Currently, the read callback never gets invoked as the communication between clients (mobile phones, CLI, etc.)
+ * and node is asynchronous. So, the read request does not reach the node. This callback may however be used in future.
  *
  * @param[in] device Device handle.
  * @param[in] param Parameter handle.
@@ -377,7 +427,7 @@ esp_err_t esp_rmaker_stop(void);
  *
  * @param[in] node Node Handle returned by esp_rmaker_node_init().
  *
- * @retur ESP_OK on success.
+ * @return ESP_OK on success.
  * @return error in case of failure.
  */
 esp_err_t esp_rmaker_node_deinit(const esp_rmaker_node_t *node);
@@ -529,6 +579,24 @@ esp_err_t esp_rmaker_device_delete(const esp_rmaker_device_t *device);
 esp_err_t esp_rmaker_device_add_cb(const esp_rmaker_device_t *device, esp_rmaker_device_write_cb_t write_cb, esp_rmaker_device_read_cb_t read_cb);
 
 /**
+ * Add bulk callbacks for a device/service
+ *
+ * Add bulk read/write callbacks for a device that will be invoked as per requests received from the cloud (or other paths
+ * as may be added in future).
+ *
+ * This is an improvement over the earlier callbacks registered using esp_rmaker_device_add_cb() so that all parameters
+ * received in a single request are passed to the callback together, instead of one by one.
+ *
+ * @param[in] device Device handle.
+ * @param[in] write_cb Bulk Write callback.
+ * @param[in] read_cb Bulk Read callback.
+ *
+ * @return ESP_OK on success.
+ * @return error in case of failure.
+ */
+esp_err_t esp_rmaker_device_add_bulk_cb(const esp_rmaker_device_t *device, esp_rmaker_device_bulk_write_cb_t write_cb, esp_rmaker_device_bulk_read_cb_t read_cb);
+
+/**
  * Add a device to a node
  *
  * @param[in] node Node handle.
@@ -610,6 +678,15 @@ esp_err_t esp_rmaker_device_add_model(const esp_rmaker_device_t *device, const c
  * @return NULL in case of failure.
  */
 char *esp_rmaker_device_get_name(const esp_rmaker_device_t *device);
+
+/** Get Device Private data from handle
+ *
+ * @param[in] device Device handle.
+ *
+ * @return void type of pointer on success.
+ * @return NULL if no private data found.
+ */
+void *esp_rmaker_device_get_priv_data(const esp_rmaker_device_t *device);
 
 /** Get device type from handle
  *
@@ -775,6 +852,8 @@ esp_err_t esp_rmaker_param_add_array_max_count(const esp_rmaker_param_t *param, 
  * Eg. If x parameters are to be reported, this API can be used for the first x -1 parameters
  * and the last one can be updated using esp_rmaker_param_update_and_report().
  * This will report all parameters which were updated prior to this call.
+ *
+ * @note This does not report to time series even if PROP_FLAG_TIME_SERIES is set. 
  *
  * Sample:
  *
@@ -952,7 +1031,7 @@ esp_err_t esp_rmaker_ota_enable_default(void);
 esp_err_t esp_rmaker_test_cmd_resp(const void *cmd, size_t cmd_len, void *priv_data);
 
 /** This API signs the challenge with RainMaker private key.
-* 
+*
 * @param[in] challenge Pointer to the data to be signed
 * @param[in] inlen Length of the challenge
 * @param[out] response Pointer to the signature.
