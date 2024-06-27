@@ -253,7 +253,6 @@ env.Append(
         join(FRAMEWORK_SDK_DIR, "esp32h2", "include", "bt", "esp_ble_mesh", "api", "models", "include"),
         join(FRAMEWORK_SDK_DIR, "esp32h2", "include", "bt", "esp_ble_mesh", "api"),
         join(FRAMEWORK_SDK_DIR, "esp32h2", "include", "bt", "porting", "include"),
-        join(FRAMEWORK_SDK_DIR, "esp32h2", "include", "bt", "porting", "nimble", "include"),
         join(FRAMEWORK_SDK_DIR, "esp32h2", "include", "bt", "porting", "npl", "freertos", "include"),
         join(FRAMEWORK_SDK_DIR, "esp32h2", "include", "bt", "porting", "transport", "include"),
         join(FRAMEWORK_SDK_DIR, "esp32h2", "include", "unity", "include"),
@@ -374,7 +373,7 @@ env.Append(
 
     CPPDEFINES=[
         "ESP_PLATFORM",
-        ("IDF_VER", '\\"v5.1.4-366-g97de085b35-dirty\\"'),
+        ("IDF_VER", '\\"v5.1.4-391-g4efd577c19-dirty\\"'),
         ("MBEDTLS_CONFIG_FILE", '\\"mbedtls/esp_config.h\\"'),
         ("OPENTHREAD_CONFIG_FILE", '\\"openthread-core-esp32x-ftd-config.h\\"'),
         ("OPENTHREAD_FTD", 1),
