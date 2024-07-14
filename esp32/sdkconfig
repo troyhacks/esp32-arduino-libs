@@ -937,6 +937,7 @@ CONFIG_ADC_DISABLE_DAC_OUTPUT=y
 # Wireless Coexistence
 #
 CONFIG_ESP_COEX_SW_COEXIST_ENABLE=y
+# CONFIG_ESP_COEX_POWER_MANAGEMENT is not set
 # end of Wireless Coexistence
 
 #
