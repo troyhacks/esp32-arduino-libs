@@ -388,7 +388,7 @@ env.Append(
 
     CPPDEFINES=[
         "ESP_PLATFORM",
-        ("IDF_VER", '\\"v5.1.4-497-gdc859c1e67-dirty\\"'),
+        ("IDF_VER", '\\"v5.1.4-545-gcd4714dd01-dirty\\"'),
         ("MBEDTLS_CONFIG_FILE", '\\"mbedtls/esp_config.h\\"'),
         ("SOC_MMU_PAGE_SIZE", 'CONFIG_MMU_PAGE_SIZE'),
         "UNITY_INCLUDE_CONFIG_H",
