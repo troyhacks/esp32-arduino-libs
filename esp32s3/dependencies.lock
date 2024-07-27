@@ -12,12 +12,12 @@ dependencies:
       type: service
     version: 0.6.0~1
   espressif/esp-dl:
-    component_hash: bf4a149595b473138afb59088852ff609eb3fb6222ec4fe2afc87891d7706c03
+    component_hash: c94bbaf8e27a1d20718db600a93cc5c8c3342dab0de680d87c75420c253a4a43
     source:
       git: https://github.com/espressif/esp-dl.git
       path: .
       type: git
-    version: e90a88ef94dd5e305105251b2591e343b1a4d6a4
+    version: af7808ba09448ce82c704455975d4cf1e4305fd7
   espressif/esp-dsp:
     component_hash: 3e7bbd487f1357a1d4944d0c85966d049501ea281b8a4c7f93f7cfedd5b7f23d
     source:
@@ -74,17 +74,17 @@ dependencies:
       type: service
     version: 1.0.1
   espressif/esp_diagnostics:
-    component_hash: 2350938db074002ef088c05cd32d80a528185e47afdb3642427156256c3e13c5
+    component_hash: 2ea46a907cad1842e41a74b9efbd533ddd4908d3ccd06370c1f8355d41dd0342
     source:
       service_url: https://api.components.espressif.com/
       type: service
-    version: 1.1.0
+    version: 1.2.0
   espressif/esp_insights:
-    component_hash: 72ece1dcf0146275e1df976c713a9b193af0907931f3810957ee68a0a84b077d
+    component_hash: c2b5219b3343e79e6d62aa5589a204612416abe8bdb6ba11224dca1b9a3c62ba
     source:
       service_url: https://api.components.espressif.com/
       type: service
-    version: 1.1.0
+    version: 1.2.0
   espressif/esp_modem:
     component_hash: e48da33fee082dd9d9a97a354a228057e07a14ac108766b40ad84e018205410a
     source:

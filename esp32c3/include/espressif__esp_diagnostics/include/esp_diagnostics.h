@@ -8,6 +8,7 @@
 
 #include <inttypes.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include <esp_err.h>
 #include <esp_log.h>
 
@@ -103,6 +104,8 @@ typedef enum {
     ESP_DIAG_DATA_TYPE_STR,      /*!< Data type string */
     ESP_DIAG_DATA_TYPE_IPv4,     /*!< Data type IPv4 address */
     ESP_DIAG_DATA_TYPE_MAC,      /*!< Data type MAC address */
+    ESP_DIAG_DATA_TYPE_NULL,     /*!< No type */
+    ESP_DIAG_DATA_TYPE_MAX,      /*!< Max type */
 } esp_diag_data_type_t;
 
 /**
