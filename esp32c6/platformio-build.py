@@ -377,7 +377,7 @@ env.Append(
 
     CPPDEFINES=[
         "ESP_PLATFORM",
-        ("IDF_VER", '\\"v5.1.4-595-gf49f9795dc-dirty\\"'),
+        ("IDF_VER", '\\"v5.1.4-605-g5c57dfe949-dirty\\"'),
         ("MBEDTLS_CONFIG_FILE", '\\"mbedtls/esp_config.h\\"'),
         ("OPENTHREAD_CONFIG_FILE", '\\"openthread-core-esp32x-ftd-config.h\\"'),
         ("OPENTHREAD_FTD", 1),
