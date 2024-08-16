@@ -37,6 +37,41 @@ FRAMEWORK_SDK_DIR = env.PioPlatform().get_package_dir(
 
 board_config = env.BoardConfig()
 
+flatten_cppdefines = env.Flatten(env['CPPDEFINES'])
+
+#
+# zigbee libs
+#
+if "ZIGBEE_MODE_ZCZR" in flatten_cppdefines:
+    env.Append(
+        LIBS=[
+            "-lesp_zb_api_zczr",
+            "-lesp_zb_cli_command",
+            "-lzboss_stack.zczr.trace",
+            "-lzboss_stack.zczr",
+            "-lzboss_port"
+        ]
+    )
+if "ZIGBEE_MODE_ED" in flatten_cppdefines:
+    env.Append(
+        LIBS=[
+            "-lesp_zb_api_ed",
+            "-lesp_zb_cli_command",
+            "-lzboss_stack.ed.trace",
+            "-lzboss_stack.ed",
+            "-lzboss_port"
+        ]
+    )
+if "ZIGBEE_MODE_RCP" in flatten_cppdefines:
+    env.Append(
+        LIBS=[
+            "-lesp_zb_api_rcp",
+            "-lesp_zb_cli_command",
+            "-lzboss_stack.rcp",
+            "-lzboss_port"
+        ]
+    )
+
 env.Append(
     ASFLAGS=[
         "-march=rv32imc"
@@ -378,7 +413,7 @@ env.Append(
 
     CPPDEFINES=[
         "ESP_PLATFORM",
-        ("IDF_VER", '\\"v5.1.4-659-gc608177cf9-dirty\\"'),
+        ("IDF_VER", '\\"v5.1.4-669-g446ec3a899-dirty\\"'),
         ("MBEDTLS_CONFIG_FILE", '\\"mbedtls/esp_config.h\\"'),
         ("OPENTHREAD_CONFIG_FILE", '\\"openthread-core-esp32x-ftd-config.h\\"'),
         ("OPENTHREAD_FTD", 1),
