@@ -1,5 +1,5 @@
 lib-builder: release/v5.3 f7cf4b4
-esp-idf: cc3203dc4f
+esp-idf: v5.3.1 c8fc5f643b
 arduino: feature/esp32p4 b4418215
 tinyusb: master 5217cee5d
 chmorgan__esp-libhelix-mp3: 1.0.3

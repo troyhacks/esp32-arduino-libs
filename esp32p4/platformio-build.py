@@ -415,7 +415,7 @@ env.Append(
 
     CPPDEFINES=[
         "ESP_PLATFORM",
-        ("IDF_VER", '\\"v5.3.1-1-gcc3203dc4f-dirty\\"'),
+        ("IDF_VER", '\\"v5.3.1-dirty\\"'),
         ("MBEDTLS_CONFIG_FILE", '\\"mbedtls/esp_config.h\\"'),
         ("MD5_ENABLED", 1),
         ("SERIAL_FLASHER_BOOT_HOLD_TIME_MS", 50),
