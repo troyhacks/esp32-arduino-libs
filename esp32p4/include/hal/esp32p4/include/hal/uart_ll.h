@@ -139,7 +139,7 @@ static inline void lp_uart_ll_set_source_clk(uart_dev_t *hw, soc_periph_lp_uart_
 }
 
 // LPPERI.core_clk_sel is a shared register, so this function must be used in an atomic way
-#define lp_uart_ll_set_source_clk(...) (void)__DECLARE_RCC_ATOMIC_ENV; lp_uart_ll_set_source_clk(__VA_ARGS__)
+#define lp_uart_ll_set_source_clk(...) lp_uart_ll_set_source_clk(__VA_ARGS__)
 
 /**
  * @brief  Configure the lp uart baud-rate.
@@ -181,7 +181,7 @@ static inline void lp_uart_ll_enable_bus_clock(int hw_id, bool enable)
 }
 
 // LPPERI.clk_en is a shared register, so this function must be used in an atomic way
-#define lp_uart_ll_enable_bus_clock(...) (void)__DECLARE_RCC_ATOMIC_ENV; lp_uart_ll_enable_bus_clock(__VA_ARGS__)
+#define lp_uart_ll_enable_bus_clock(...) lp_uart_ll_enable_bus_clock(__VA_ARGS__)
 
 /**
  * @brief Reset LP UART module
@@ -196,7 +196,7 @@ static inline void lp_uart_ll_reset_register(int hw_id)
 }
 
 // LPPERI.reset_en is a shared register, so this function must be used in an atomic way
-#define lp_uart_ll_reset_register(...) (void)__DECLARE_RCC_ATOMIC_ENV; lp_uart_ll_reset_register(__VA_ARGS__)
+#define lp_uart_ll_reset_register(...) lp_uart_ll_reset_register(__VA_ARGS__)
 
 /*************************************** General LL functions ******************************************/
 
@@ -288,7 +288,7 @@ static inline void uart_ll_enable_bus_clock(uart_port_t uart_num, bool enable)
     }
 }
 // HP_SYS_CLKRST.soc_clk_ctrlx are shared registers, so this function must be used in an atomic way
-#define uart_ll_enable_bus_clock(...) (void)__DECLARE_RCC_ATOMIC_ENV; uart_ll_enable_bus_clock(__VA_ARGS__)
+#define uart_ll_enable_bus_clock(...) uart_ll_enable_bus_clock(__VA_ARGS__)
 
 /**
  * @brief Reset UART module
@@ -326,7 +326,7 @@ static inline void uart_ll_reset_register(uart_port_t uart_num)
     }
 }
 //  HP_SYS_CLKRST.hp_rst_en1 is a shared register, so this function must be used in an atomic way
-#define uart_ll_reset_register(...) (void)__DECLARE_RCC_ATOMIC_ENV; uart_ll_reset_register(__VA_ARGS__)
+#define uart_ll_reset_register(...) uart_ll_reset_register(__VA_ARGS__)
 
 /**
  * @brief  Enable the UART clock.
@@ -354,7 +354,7 @@ FORCE_INLINE_ATTR void uart_ll_sclk_enable(uart_dev_t *hw)
     }
 }
 // HP_SYS_CLKRST.peri_clk_ctrlxxx are shared registers, so this function must be used in an atomic way
-#define uart_ll_sclk_enable(...) (void)__DECLARE_RCC_ATOMIC_ENV; uart_ll_sclk_enable(__VA_ARGS__)
+#define uart_ll_sclk_enable(...) uart_ll_sclk_enable(__VA_ARGS__)
 
 /**
  * @brief  Disable the UART clock.
@@ -381,7 +381,7 @@ FORCE_INLINE_ATTR void uart_ll_sclk_disable(uart_dev_t *hw)
     }
 }
 // HP_SYS_CLKRST.peri_clk_ctrlxxx are shared registers, so this function must be used in an atomic way
-#define uart_ll_sclk_disable(...) (void)__DECLARE_RCC_ATOMIC_ENV; uart_ll_sclk_disable(__VA_ARGS__)
+#define uart_ll_sclk_disable(...) uart_ll_sclk_disable(__VA_ARGS__)
 
 /**
  * @brief  Set the UART source clock.
@@ -425,7 +425,7 @@ FORCE_INLINE_ATTR void uart_ll_set_sclk(uart_dev_t *hw, soc_module_clk_t source_
     }
 }
 //HP_SYS_CLKRST.peri_clk_ctrlxxx are shared registers, so this function must be used in an atomic way
-#define uart_ll_set_sclk(...) (void)__DECLARE_RCC_ATOMIC_ENV; uart_ll_set_sclk(__VA_ARGS__)
+#define uart_ll_set_sclk(...) uart_ll_set_sclk(__VA_ARGS__)
 
 /**
  * @brief  Get the UART source clock type.
@@ -507,7 +507,7 @@ FORCE_INLINE_ATTR void uart_ll_set_baudrate(uart_dev_t *hw, uint32_t baud, uint3
 }
 #if !BOOTLOADER_BUILD
 //HP_SYS_CLKRST.peri_clk_ctrlxxx are shared registers, so this function must be used in an atomic way
-// #define uart_ll_set_baudrate(...) (void)__DECLARE_RCC_ATOMIC_ENV; uart_ll_set_baudrate(__VA_ARGS__)
+#define uart_ll_set_baudrate(...) uart_ll_set_baudrate(__VA_ARGS__)
 #endif
 
 /**
