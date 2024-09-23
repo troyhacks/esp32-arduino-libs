@@ -150,7 +150,7 @@ static inline void i2c_ll_enable_bus_clock(int i2c_port, bool enable)
 
 /// use a macro to wrap the function, force the caller to use it in a critical section
 /// the critical section needs to declare the __DECLARE_RCC_ATOMIC_ENV variable in advance
-#define i2c_ll_enable_bus_clock(...) do { i2c_ll_enable_bus_clock(__VA_ARGS__);} while(0)
+#define i2c_ll_enable_bus_clock(...) do {(void)__DECLARE_RCC_ATOMIC_ENV; i2c_ll_enable_bus_clock(__VA_ARGS__);} while(0)
 
 /**
  * @brief Reset the I2C module
@@ -170,7 +170,7 @@ static inline void i2c_ll_reset_register(int i2c_port)
 
 /// use a macro to wrap the function, force the caller to use it in a critical section
 /// the critical section needs to declare the __DECLARE_RCC_ATOMIC_ENV variable in advance
-#define i2c_ll_reset_register(...) do { i2c_ll_reset_register(__VA_ARGS__);} while(0)
+#define i2c_ll_reset_register(...) do {(void)__DECLARE_RCC_ATOMIC_ENV; i2c_ll_reset_register(__VA_ARGS__);} while(0)
 
 /**
  * @brief  Configure the I2C bus timing related register.
@@ -796,7 +796,7 @@ static inline void i2c_ll_set_source_clk(i2c_dev_t *hw, i2c_clock_source_t src_c
 
 /// use a macro to wrap the function, force the caller to use it in a critical section
 /// the critical section needs to declare the __DECLARE_RCC_ATOMIC_ENV variable in advance
-#define i2c_ll_set_source_clk(...) do {i2c_ll_set_source_clk(__VA_ARGS__);} while(0)
+#define i2c_ll_set_source_clk(...) do {(void)__DECLARE_RCC_ATOMIC_ENV; i2c_ll_set_source_clk(__VA_ARGS__);} while(0)
 
 /**
  * @brief Set LP I2C source clock
@@ -825,7 +825,7 @@ static inline void lp_i2c_ll_set_source_clk(i2c_dev_t *hw, soc_periph_lp_i2c_clk
 }
 
 /// LP_AON_CLKRST.lpperi is a shared register, so this function must be used in an atomic way
-#define lp_i2c_ll_set_source_clk(...) lp_i2c_ll_set_source_clk(__VA_ARGS__)
+#define lp_i2c_ll_set_source_clk(...) (void)__DECLARE_RCC_ATOMIC_ENV; lp_i2c_ll_set_source_clk(__VA_ARGS__)
 
 /**
  * @brief Enable bus clock for the LP I2C module
@@ -840,7 +840,7 @@ static inline void _lp_i2c_ll_enable_bus_clock(int hw_id, bool enable)
 }
 
 /// LPPERI.clk_en is a shared register, so this function must be used in an atomic way
-#define lp_i2c_ll_enable_bus_clock(...) _lp_i2c_ll_enable_bus_clock(__VA_ARGS__)
+#define lp_i2c_ll_enable_bus_clock(...) (void)__DECLARE_RCC_ATOMIC_ENV; _lp_i2c_ll_enable_bus_clock(__VA_ARGS__)
 
 /**
  * @brief Reset LP I2C module
@@ -855,7 +855,7 @@ static inline void lp_i2c_ll_reset_register(int hw_id)
 }
 
 /// LPPERI.reset_en is a shared register, so this function must be used in an atomic way
-#define lp_i2c_ll_reset_register(...) lp_i2c_ll_reset_register(__VA_ARGS__)
+#define lp_i2c_ll_reset_register(...) (void)__DECLARE_RCC_ATOMIC_ENV; lp_i2c_ll_reset_register(__VA_ARGS__)
 
 /**
  * @brief Enable I2C peripheral controller clock

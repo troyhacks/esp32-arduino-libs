@@ -98,7 +98,7 @@ void _i2c_hal_set_bus_timing(i2c_hal_context_t *hal, int scl_freq, i2c_clock_sou
 #if SOC_PERIPH_CLK_CTRL_SHARED
 /// use a macro to wrap the function, force the caller to use it in a critical section
 /// the critical section needs to declare the __DECLARE_RCC_ATOMIC_ENV variable in advance
-#define i2c_hal_set_bus_timing(...) do {_i2c_hal_set_bus_timing(__VA_ARGS__);} while(0)
+#define i2c_hal_set_bus_timing(...) do {(void)__DECLARE_RCC_ATOMIC_ENV; _i2c_hal_set_bus_timing(__VA_ARGS__);} while(0)
 #else
 #define i2c_hal_set_bus_timing(...)   _i2c_hal_set_bus_timing(__VA_ARGS__)
 #endif
@@ -152,7 +152,7 @@ void _i2c_hal_init(i2c_hal_context_t *hal, int i2c_port);
 #if SOC_PERIPH_CLK_CTRL_SHARED
 /// use a macro to wrap the function, force the caller to use it in a critical section
 /// the critical section needs to declare the __DECLARE_RCC_ATOMIC_ENV variable in advance
-#define i2c_hal_init(...) do {_i2c_hal_init(__VA_ARGS__);} while(0)
+#define i2c_hal_init(...) do {(void)__DECLARE_RCC_ATOMIC_ENV; _i2c_hal_init(__VA_ARGS__);} while(0)
 #else
 #define i2c_hal_init(...)   _i2c_hal_init(__VA_ARGS__)
 #endif
@@ -167,7 +167,7 @@ void _i2c_hal_deinit(i2c_hal_context_t *hal);
 #if SOC_PERIPH_CLK_CTRL_SHARED
 /// use a macro to wrap the function, force the caller to use it in a critical section
 /// the critical section needs to declare the __DECLARE_RCC_ATOMIC_ENV variable in advance
-#define i2c_hal_deinit(...) do {_i2c_hal_deinit(__VA_ARGS__);} while(0)
+#define i2c_hal_deinit(...) do {(void)__DECLARE_RCC_ATOMIC_ENV; _i2c_hal_deinit(__VA_ARGS__);} while(0)
 #else
 #define i2c_hal_deinit(...)   _i2c_hal_deinit(__VA_ARGS__)
 #endif

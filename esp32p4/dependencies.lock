@@ -19,6 +19,20 @@ dependencies:
       registry_url: https://components.espressif.com/
       type: service
     version: 0.6.0~1
+  espressif/eppp_link:
+    component_hash: c2fd9c57ac14a68a62c9d9cdeec39a2b265abc16779196ce2c9f5000c9a4dd8b
+    dependencies:
+    - name: espressif/esp_serial_slave_link
+      registry_url: https://components.espressif.com/
+      require: private
+      version: ^1.1.0
+    - name: idf
+      require: private
+      version: '>=5.2'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 0.2.0
   espressif/esp-dsp:
     component_hash: fa7fe74305df6da25867437ebcd4213e047cbfc0556cf92067ab657fce537c6e
     dependencies:
@@ -30,7 +44,7 @@ dependencies:
       type: service
     version: 1.5.2
   espressif/esp-modbus:
-    component_hash: ec567c912fbd8b08648ba72b5562df012482584918fb4af670e57025fc30ea42
+    component_hash: 2168e6b4cbda4d0281a2a2d1a40a3848e231473b2690d73217e3600fd2c98c12
     dependencies:
     - name: idf
       require: private
@@ -38,9 +52,9 @@ dependencies:
     source:
       registry_url: https://components.espressif.com/
       type: service
-    version: 1.0.15
+    version: 1.0.16
   espressif/esp-nn:
-    component_hash: b32869798bdb40dec6bc99caca48cd65d42f8a9f506b9ab9c598a076f891ede9
+    component_hash: f6f2851ce82137a66e4265071c9b852bbe0130b882a18dea9f03faea7bf1295a
     dependencies:
     - name: idf
       require: private
@@ -48,7 +62,7 @@ dependencies:
     source:
       registry_url: https://components.espressif.com/
       type: service
-    version: 1.0.2
+    version: 1.1.0
   espressif/esp-serial-flasher:
     component_hash: dcc42a16712a1a636509cf0bf90e14032d7f2141784b533613b267b6aa318d52
     dependencies: []
@@ -114,6 +128,16 @@ dependencies:
       registry_url: https://components.espressif.com/
       type: service
     version: 1.2.0
+  espressif/esp_hosted:
+    component_hash: b5021165a3b43c40e24bf2b011292c721f20c07863b1f7091bd95d02d4daade6
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=5.3'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 0.0.14
   espressif/esp_insights:
     component_hash: c2b5219b3343e79e6d62aa5589a204612416abe8bdb6ba11224dca1b9a3c62ba
     dependencies:
@@ -234,6 +258,34 @@ dependencies:
       registry_url: https://components.espressif.com/
       type: service
     version: 2.4.1
+  espressif/esp_serial_slave_link:
+    component_hash: 8c534b7d4986ca0e4c41db71f559492b795ab862f1d15359d7993034696b7bcc
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=5.0'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 1.1.0
+  espressif/esp_wifi_remote:
+    component_hash: dd44abf72eab81106bb33f95728cd8cfd2fa0647dcaec0c99ecbb47f929d8a2e
+    dependencies:
+    - name: espressif/eppp_link
+      registry_url: https://components.espressif.com/
+      require: private
+      version: '>=0.1'
+    - name: espressif/esp_hosted
+      registry_url: https://components.espressif.com/
+      require: private
+      version: '>=0.0.6'
+    - name: idf
+      require: private
+      version: '>=5.3'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 0.3.0
   espressif/jsmn:
     component_hash: d80350c41bbaa827c98a25b6072df00884e72f54885996fab4a4f0aebce6b6c3
     dependencies:
@@ -329,9 +381,11 @@ direct_dependencies:
 - espressif/esp-tflite-micro
 - espressif/esp-zboss-lib
 - espressif/esp-zigbee-lib
+- espressif/esp_hosted
 - espressif/esp_insights
 - espressif/esp_modem
 - espressif/esp_rainmaker
+- espressif/esp_wifi_remote
 - espressif/libsodium
 - espressif/mdns
 - espressif/network_provisioning
@@ -339,6 +393,6 @@ direct_dependencies:
 - espressif/rmaker_common
 - idf
 - joltwallet/littlefs
-manifest_hash: 1bcd4a0fa6d1c03b9d1c2b210655490e4ae066130d7978b1dbf82c1f6ace87ce
+manifest_hash: be330680c155e48544011cc0358feb4ff50afac5e73031a6959c2c0f810d2fe6
 target: esp32p4
 version: 2.0.0
