@@ -1,6 +1,6 @@
 lib-builder: release/v5.3 f7cf4b4
 esp-idf: 4d0db7045d
-arduino: feature/esp32p4 f72fc690
+arduino: release/v3.1.x 9398d52d
 tinyusb: master f4dd17648
 chmorgan__esp-libhelix-mp3: 1.0.3
 espressif__cbor: 0.6.0~1
@@ -14,7 +14,7 @@ espressif__esp-zboss-lib: 1.5.0
 espressif__esp-zigbee-lib: 1.5.0
 espressif__esp_diag_data_store: 1.0.1
 espressif__esp_diagnostics: 1.2.0
-espressif__esp_hosted: 0.0.6
+espressif__esp_hosted: 0.0.15
 espressif__esp_insights: 1.2.0
 espressif__esp_modem: 1.1.0
 espressif__esp_rainmaker: 1.5.0

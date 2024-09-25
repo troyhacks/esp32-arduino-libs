@@ -24,6 +24,7 @@ extern "C" {
 /** Includes **/
 #include "common.h"
 #include "esp_wifi.h"
+#include "esp_hosted_wifi_config.h"
 
 /** Exported variables **/
 
@@ -75,7 +76,19 @@ esp_err_t rpc_wifi_set_protocol(wifi_interface_t ifx, uint8_t protocol_bitmap);
 esp_err_t rpc_wifi_get_protocol(wifi_interface_t ifx, uint8_t *protocol_bitmap);
 esp_err_t rpc_wifi_set_max_tx_power(int8_t power);
 esp_err_t rpc_wifi_get_max_tx_power(int8_t *power);
+esp_err_t rpc_wifi_sta_get_aid(uint16_t *aid);
 esp_err_t rpc_ota(const char* image_url);
+
+#if H_WIFI_DUALBAND_SUPPORT
+esp_err_t rpc_wifi_set_band(wifi_band_t band);
+esp_err_t rpc_wifi_get_band(wifi_band_t *band);
+esp_err_t rpc_wifi_set_band_mode(wifi_band_mode_t band_mode);
+esp_err_t rpc_wifi_get_band_mode(wifi_band_mode_t *band_mode);
+esp_err_t rpc_wifi_set_protocols(wifi_interface_t ifx, wifi_protocols_t *protocols);
+esp_err_t rpc_wifi_get_protocols(wifi_interface_t ifx, wifi_protocols_t *protocols);
+esp_err_t rpc_wifi_set_bandwidths(wifi_interface_t ifx, wifi_bandwidths_t *bw);
+esp_err_t rpc_wifi_get_bandwidths(wifi_interface_t ifx, wifi_bandwidths_t *bw);
+#endif
 
 #ifdef __cplusplus
 }
