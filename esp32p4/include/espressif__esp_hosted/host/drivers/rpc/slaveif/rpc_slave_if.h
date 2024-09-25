@@ -13,6 +13,7 @@
 #include "esp_hosted_rpc.pb-c.h"
 #include "esp_wifi.h"
 #include "esp_wifi_types.h"
+#include "esp_hosted_wifi_config.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -66,7 +67,7 @@ typedef struct {
 } hosted_mode_t;
 
 typedef struct {
-    uint8_t iface;
+	uint8_t iface;
 	wifi_config_t u;
 } wifi_cfg_t;
 
@@ -140,6 +141,22 @@ typedef struct {
 } rpc_wifi_sta_get_rssi_t;
 
 typedef struct {
+	uint16_t aid;
+} rpc_wifi_sta_get_aid_t;
+
+typedef struct {
+	wifi_interface_t ifx;
+	uint16_t ghz_2g;
+	uint16_t ghz_5g;
+} rpc_wifi_protocols_t;
+
+typedef struct {
+	wifi_interface_t ifx;
+	wifi_bandwidth_t ghz_2g;
+	wifi_bandwidth_t ghz_5g;
+} rpc_wifi_bandwidths_t;
+
+typedef struct {
 	/* event */
 	uint32_t hb_num;
 	/* Req */
@@ -167,8 +184,8 @@ typedef struct Ctrl_cmd_t {
 	void * rx_sem;
 
 	union {
-        wifi_init_config_t          wifi_init_config;
-        wifi_cfg_t                  wifi_config;
+		wifi_init_config_t          wifi_init_config;
+		wifi_cfg_t                  wifi_config;
 		wifi_mac_t                  wifi_mac;
 		hosted_mode_t               wifi_mode;
 
@@ -204,6 +221,18 @@ typedef struct Ctrl_cmd_t {
 		rpc_wifi_sta_get_rssi_t     wifi_sta_get_rssi;
 
 		rpc_wifi_protocol           wifi_protocol;
+
+		rpc_wifi_sta_get_aid_t      wifi_sta_get_aid;
+
+#if H_WIFI_DUALBAND_SUPPORT
+		rpc_wifi_protocols_t        wifi_protocols;
+
+		rpc_wifi_bandwidths_t       wifi_bandwidths;
+
+		wifi_band_t                 wifi_band;
+
+		wifi_band_mode_t            wifi_band_mode;
+#endif
 
 		event_heartbeat_t           e_heartbeat;
 
@@ -333,112 +362,121 @@ int rpc_slaveif_init(void);
 int rpc_slaveif_deinit(void);
 
 /* Get the MAC address of station or softAP interface of ESP32 */
-ctrl_cmd_t * wifi_get_mac(ctrl_cmd_t req);
+ctrl_cmd_t * wifi_get_mac(ctrl_cmd_t *req);
 
 /* Set MAC address of ESP32 interface for given wifi mode */
-ctrl_cmd_t * wifi_set_mac(ctrl_cmd_t req);
+ctrl_cmd_t * wifi_set_mac(ctrl_cmd_t *req);
 
 /* Get Wi-Fi mode of ESP32 */
-ctrl_cmd_t * wifi_get_mode(ctrl_cmd_t req);
+ctrl_cmd_t * wifi_get_mode(ctrl_cmd_t *req);
 
 /* Set the Wi-Fi mode of ESP32 */
-ctrl_cmd_t * wifi_set_mode(ctrl_cmd_t req);
+ctrl_cmd_t * wifi_set_mode(ctrl_cmd_t *req);
 
 /* Set Wi-Fi power save mode of ESP32 */
-ctrl_cmd_t * wifi_set_power_save_mode(ctrl_cmd_t req);
+ctrl_cmd_t * wifi_set_power_save_mode(ctrl_cmd_t *req);
 
 /* Get the Wi-Fi power save mode of ESP32 */
-ctrl_cmd_t * wifi_get_power_save_mode(ctrl_cmd_t req);
+ctrl_cmd_t * wifi_get_power_save_mode(ctrl_cmd_t *req);
 
 ///* Get list of available neighboring APs of ESP32 */
-//ctrl_cmd_t * wifi_ap_scan_list(ctrl_cmd_t req);
+//ctrl_cmd_t * wifi_ap_scan_list(ctrl_cmd_t *req);
 //
 ///* Get the AP config to which ESP32 station is connected */
-//ctrl_cmd_t * wifi_get_ap_config(ctrl_cmd_t req);
+//ctrl_cmd_t * wifi_get_ap_config(ctrl_cmd_t *req);
 //
 ///* Set the AP config to which ESP32 station should connect to */
-//ctrl_cmd_t * wifi_connect_ap(ctrl_cmd_t req);
+//ctrl_cmd_t * wifi_connect_ap(ctrl_cmd_t *req);
 //
 ///* Disconnect ESP32 station from AP */
-//ctrl_cmd_t * wifi_disconnect_ap(ctrl_cmd_t req);
+//ctrl_cmd_t * wifi_disconnect_ap(ctrl_cmd_t *req);
 //
 ///* Set configuration of ESP32 softAP and start broadcasting */
-//ctrl_cmd_t * wifi_start_softap(ctrl_cmd_t req);
+//ctrl_cmd_t * wifi_start_softap(ctrl_cmd_t *req);
 //
 ///* Get configuration of ESP32 softAP */
-//ctrl_cmd_t * wifi_get_softap_config(ctrl_cmd_t req);
+//ctrl_cmd_t * wifi_get_softap_config(ctrl_cmd_t *req);
 //
 ///* Stop ESP32 softAP */
-//ctrl_cmd_t * wifi_stop_softap(ctrl_cmd_t req);
+//ctrl_cmd_t * wifi_stop_softap(ctrl_cmd_t *req);
 //
 ///* Get list of connected stations to ESP32 softAP */
-//ctrl_cmd_t * wifi_get_softap_connected_station_list(ctrl_cmd_t req);
+//ctrl_cmd_t * wifi_get_softap_connected_station_list(ctrl_cmd_t *req);
 //
 ///* Function set 802.11 Vendor-Specific Information Element.
 // * It needs to get called before starting of ESP32 softAP */
-//ctrl_cmd_t * wifi_set_vendor_specific_ie(ctrl_cmd_t req);
+//ctrl_cmd_t * wifi_set_vendor_specific_ie(ctrl_cmd_t *req);
 
 /* Sets maximum WiFi transmitting power at ESP32 */
-ctrl_cmd_t * wifi_set_max_tx_power(ctrl_cmd_t req);
+ctrl_cmd_t * wifi_set_max_tx_power(ctrl_cmd_t *req);
 
 /* Gets maximum WiFi transmiting power at ESP32 */
-ctrl_cmd_t * wifi_get_max_tx_power(ctrl_cmd_t req);
+ctrl_cmd_t * wifi_get_max_tx_power(ctrl_cmd_t *req);
 
 /* Configure heartbeat event. Be default heartbeat is not enabled.
  * To enable heartbeats, user need to use this API in addition
  * to setting event callback for heartbeat event */
-ctrl_cmd_t * config_heartbeat(ctrl_cmd_t req);
+ctrl_cmd_t * config_heartbeat(ctrl_cmd_t *req);
 
 /* Performs an OTA begin operation for ESP32 which erases and
  * prepares existing flash partition for new flash writing */
-ctrl_cmd_t * ota_begin(ctrl_cmd_t req);
+ctrl_cmd_t * ota_begin(ctrl_cmd_t *req);
 
 /* Performs an OTA write operation for ESP32, It writes bytes from `ota_data`
  * buffer with `ota_data_len` number of bytes to OTA partition in flash. Number
  * of bytes can be small than size of complete binary to be flashed. In that
  * case, this caller is expected to repeatedly call this function till
  * total size written equals size of complete binary */
-ctrl_cmd_t * ota_write(ctrl_cmd_t req);
+ctrl_cmd_t * ota_write(ctrl_cmd_t *req);
 
 /* Performs an OTA end operation for ESP32, It validates written OTA image,
  * sets newly written OTA partition as boot partition for next boot,
  * Creates timer which reset ESP32 after 5 sec */
-ctrl_cmd_t * ota_end(ctrl_cmd_t req);
+ctrl_cmd_t * ota_end(ctrl_cmd_t *req);
 
 /* TODO: add descriptions */
-ctrl_cmd_t * wifi_init(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_deinit(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_start(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_stop(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_connect(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_disconnect(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_set_config(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_get_config(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_scan_start(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_scan_stop(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_scan_get_ap_num(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_scan_get_ap_records(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_clear_ap_list(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_restore(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_clear_fast_connect(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_deauth_sta(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_sta_get_ap_info(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_set_ps(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_get_ps(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_set_storage(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_set_bandwidth(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_get_bandwidth(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_set_channel(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_get_channel(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_set_country_code(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_get_country_code(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_set_country(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_get_country(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_ap_get_sta_list(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_ap_get_sta_aid(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_sta_get_rssi(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_set_protocol(ctrl_cmd_t req);
-ctrl_cmd_t * wifi_get_protocol(ctrl_cmd_t req);
+ctrl_cmd_t * wifi_init(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_deinit(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_start(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_stop(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_connect(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_disconnect(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_set_config(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_get_config(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_scan_start(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_scan_stop(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_scan_get_ap_num(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_scan_get_ap_records(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_clear_ap_list(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_restore(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_clear_fast_connect(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_deauth_sta(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_sta_get_ap_info(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_set_ps(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_get_ps(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_set_storage(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_set_bandwidth(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_get_bandwidth(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_set_channel(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_get_channel(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_set_country_code(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_get_country_code(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_set_country(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_get_country(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_ap_get_sta_list(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_ap_get_sta_aid(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_sta_get_rssi(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_set_protocol(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_get_protocol(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_sta_get_aid(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_set_protocols(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_get_protocols(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_set_bandwidths(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_get_bandwidths(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_set_band(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_get_band(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_set_band_mode(ctrl_cmd_t *req);
+ctrl_cmd_t * wifi_get_band_mode(ctrl_cmd_t *req);
 
 /* Get the interface up for interface `iface` */
 int interface_up(int sockfd, char* iface);
