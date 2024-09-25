@@ -129,7 +129,7 @@ dependencies:
       type: service
     version: 1.2.0
   espressif/esp_hosted:
-    component_hash: a2fd423cab6ff6be1bc08baff18f15964559023d2eae28813fb5944f92333c6b
+    component_hash: 524817a13ee670e2ce84c0ef2cac2b39c85c86afeda8a8cf1641cd24cb167383
     dependencies:
     - name: idf
       require: private
@@ -137,7 +137,7 @@ dependencies:
     source:
       registry_url: https://components.espressif.com/
       type: service
-    version: 0.0.15
+    version: 0.0.6
   espressif/esp_insights:
     component_hash: c2b5219b3343e79e6d62aa5589a204612416abe8bdb6ba11224dca1b9a3c62ba
     dependencies:
@@ -393,6 +393,6 @@ direct_dependencies:
 - espressif/rmaker_common
 - idf
 - joltwallet/littlefs
-manifest_hash: 1d5c67fc89599768283f2256d2d16d8a8aec62694244f29c19ef31228c66fbff
+manifest_hash: aa891192e599fdca30619dd7c49e9f121cc015ea590b0d97fc2cc8bf91a3f5a9
 target: esp32p4
 version: 2.0.0
