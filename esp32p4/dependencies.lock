@@ -1,14 +1,4 @@
 dependencies:
-  chmorgan/esp-libhelix-mp3:
-    component_hash: cbb76089dc2c5749f7b470e2e70aedc44c9da519e04eb9a67d4c7ec275229e53
-    dependencies:
-    - name: idf
-      require: private
-      version: '>=4.1.0'
-    source:
-      registry_url: https://components.espressif.com/
-      type: service
-    version: 1.0.3
   espressif/eppp_link:
     component_hash: c2fd9c57ac14a68a62c9d9cdeec39a2b265abc16779196ce2c9f5000c9a4dd8b
     dependencies:
@@ -33,16 +23,6 @@ dependencies:
       registry_url: https://components.espressif.com/
       type: service
     version: 1.5.2
-  espressif/esp-modbus:
-    component_hash: 2168e6b4cbda4d0281a2a2d1a40a3848e231473b2690d73217e3600fd2c98c12
-    dependencies:
-    - name: idf
-      require: private
-      version: '>=4.3'
-    source:
-      registry_url: https://components.espressif.com/
-      type: service
-    version: 1.0.16
   espressif/esp_hosted:
     component_hash: 524817a13ee670e2ce84c0ef2cac2b39c85c86afeda8a8cf1641cd24cb167383
     dependencies:
@@ -126,9 +106,7 @@ dependencies:
       type: service
     version: 1.14.8
 direct_dependencies:
-- chmorgan/esp-libhelix-mp3
 - espressif/esp-dsp
-- espressif/esp-modbus
 - espressif/esp_hosted
 - espressif/esp_wifi_remote
 - espressif/libsodium
@@ -136,6 +114,6 @@ direct_dependencies:
 - espressif/network_provisioning
 - idf
 - joltwallet/littlefs
-manifest_hash: 040cab1404be4ccd1b4d2b2e17bcddb7a995b2835f3a015945bbccf4b27a400e
+manifest_hash: 2015b7ba8183ebf0dd0fe1a8485a5c5857b96f51aa13a96bf88c6bd06cc640d7
 target: esp32p4
 version: 2.0.0
