@@ -94,7 +94,7 @@ env.Append(
     ],
 
     CCFLAGS=[
-        "-Os",
+        "-O2",
         "-march=rv32imafc_zicsr_zifencei_xesppie",
         "-mabi=ilp32f",
         "-ffunction-sections",
@@ -109,7 +109,6 @@ env.Append(
         "-gdwarf-4",
         "-ggdb",
         "-nostartfiles",
-        "-freorder-blocks",
         "-Wwrite-strings",
         "-fstack-protector",
         "-Wno-address",
