@@ -57,7 +57,7 @@ MEMORY
    * Enabling Bluetooth & Trace Memory features in menuconfig will decrease the amount of RAM available.
    */
   sram_low (RWX) : org = 0x4FF00000, len = 0x4FF2CBD0 - 0x4FF00000
-  sram_high (RW) : org = 0x4FF40000, len = 0x80000 - 0x80000
+  sram_high (RW) : org = 0x4FF40000, len = 0x80000 - 0x20000
   /* Flash mapped constant data */
   drom_seg (R) : org = 0x40000020, len = (0x10000 << 10) - 0x20
   /* (See irom_seg for meaning of 0x20 offset in the above.) */

@@ -94,7 +94,7 @@ env.Append(
     ],
 
     CCFLAGS=[
-        "-O2",
+        "-Os",
         "-march=rv32imafc_zicsr_zifencei_xesppie",
         "-mabi=ilp32f",
         "-ffunction-sections",
@@ -109,6 +109,7 @@ env.Append(
         "-gdwarf-4",
         "-ggdb",
         "-nostartfiles",
+        "-freorder-blocks",
         "-Wwrite-strings",
         "-fstack-protector",
         "-Wno-address",
@@ -135,6 +136,7 @@ env.Append(
         "-Wl,--enable-non-contiguous-regions",
         "-Wl,--whole-archive",
         "-Wl,--no-whole-archive",
+        "-Wl,--undefined=FreeRTOS_openocd_params",
         "-T", "rom.api.ld",
         "-T", "esp32p4.peripherals.ld",
         "-T", "esp32p4.rom.ld",
@@ -172,6 +174,8 @@ env.Append(
         "-u", "__cxx_init_dummy",
         "-u", "esp_timer_init_include_func",
         "-u", "uart_vfs_include_dev_init",
+        "-u", "usb_serial_jtag_vfs_include_dev_init",
+        "-u", "usb_serial_jtag_connection_monitor_include",
         "-u", "esp_vfs_include_console_register",
         "-u", "vfs_include_syscalls_impl",
         '-Wl,-Map="%s"' % join("${BUILD_DIR}", "${PROGNAME}.map")
