@@ -1,7 +1,7 @@
 lib-builder: release/v5.3 f7cf4b4
 esp-idf: 4d0db7045d
-arduino: release/v3.1.x 58c0bbc0
-tinyusb: master eda3cceab
+arduino: release/v3.1.x ba9a3a1d
+tinyusb: master 65242fd11
 espressif__eppp_link: 0.2.0
 espressif__esp-dsp: 1.5.2
 espressif__esp_codec_dev: 1.3.1
