@@ -796,7 +796,7 @@ static inline void i2c_ll_set_source_clk(i2c_dev_t *hw, i2c_clock_source_t src_c
 
 /// use a macro to wrap the function, force the caller to use it in a critical section
 /// the critical section needs to declare the __DECLARE_RCC_ATOMIC_ENV variable in advance
-#define i2c_ll_set_source_clk(...) do {(void)__DECLARE_RCC_ATOMIC_ENV; i2c_ll_set_source_clk(__VA_ARGS__);} while(0)
+#define i2c_ll_set_source_clk(...) do {i2c_ll_set_source_clk(__VA_ARGS__);} while(0)
 
 /**
  * @brief Set LP I2C source clock
