@@ -71,12 +71,16 @@ if "ZIGBEE_MODE_RCP" in flatten_cppdefines:
     )
 
 env.Append(
+env.Append(
     ASFLAGS=[
-        "-march=rv32imc"
+        "-march=rv32imafc_zicsr_zifencei_xesppie",
+        "-mabi=ilp32f"
     ],
 
     ASPPFLAGS=[
-        "-x", "assembler-with-cpp"
+        "-x", "assembler-with-cpp",
+        "-march=rv32imafc_zicsr_zifencei_xesppie",
+        "-mabi=ilp32f"
     ],
 
     CFLAGS=[
