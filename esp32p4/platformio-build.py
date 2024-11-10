@@ -72,14 +72,11 @@ if "ZIGBEE_MODE_RCP" in flatten_cppdefines:
 
 env.Append(
     ASFLAGS=[
-        "-march=rv32imafc_zicsr_zifencei_xesppie",
-        "-mabi=ilp32f"
+        "-march=rv32imc"
     ],
 
     ASPPFLAGS=[
-        "-x", "assembler-with-cpp",
-        "-march=rv32imafc_zicsr_zifencei_xesppie",
-        "-mabi=ilp32f"
+        "-x", "assembler-with-cpp"
     ],
 
     CFLAGS=[
@@ -414,7 +411,7 @@ env.Append(
 
     CPPDEFINES=[
         "ESP_PLATFORM",
-        ("IDF_VER", '\\"v5.3.1-244-g4d0db7045d-dirty\\"'),
+        ("IDF_VER", '\\"v5.3.1-638-ga0f798cfc4-dirty\\"'),
         ("MBEDTLS_CONFIG_FILE", '\\"mbedtls/esp_config.h\\"'),
         ("SOC_MMU_PAGE_SIZE", 'CONFIG_MMU_PAGE_SIZE'),
         ("SOC_XTAL_FREQ_MHZ", 'CONFIG_XTAL_FREQ'),
