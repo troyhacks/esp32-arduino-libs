@@ -1,7 +1,7 @@
 lib-builder: release/v5.3 76233ce
-esp-idf: a0f798cfc4
-arduino: release/v3.1.x f5ce3f76
-tinyusb: master 9e674d4fa
+esp-idf: v5.3.2 9d7f2d69f5
+arduino: release/v3.1.x 5a8cba88
+tinyusb: master cb22301f9
 chmorgan__esp-libhelix-mp3: 1.0.3
 espressif__eppp_link: 0.2.0
 espressif__esp-dsp: 1.5.2
