@@ -127,6 +127,6 @@ direct_dependencies:
 - espressif/network_provisioning
 - idf
 - joltwallet/littlefs
-manifest_hash: 59307e2494161b68b262ccad6880bbaad2f6716c6c4767fd127454a7d8f5eef6
+manifest_hash: fe41e13fff64b9973b03729ff2675eaf2a633333fb6edbfc14b1a00db4f20679
 target: esp32p4
 version: 2.0.0
