@@ -1,10 +1,11 @@
 lib-builder: release/v5.3 76233ce
 esp-idf: v5.3.2 9d7f2d69f5
 arduino: release/v3.1.x 5a8cba88
-tinyusb: master 86ad6e56c
+tinyusb: master 249556360
 espressif__eppp_link: 0.2.0
 espressif__esp-dsp: 1.5.2
 espressif__esp-modbus: 1.0.16
+espressif__esp_codec_dev: 1.3.3
 espressif__esp_hosted: 0.0.25
 espressif__esp_serial_slave_link: 1.1.0
 espressif__esp_wifi_remote: 0.4.1
