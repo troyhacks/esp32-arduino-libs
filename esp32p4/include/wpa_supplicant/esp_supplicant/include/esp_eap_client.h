@@ -334,6 +334,15 @@ esp_err_t esp_eap_client_set_fast_params(esp_eap_fast_config config);
 esp_err_t esp_eap_client_use_default_cert_bundle(bool use_default_bundle);
 
 /**
+ * @brief     Set Opportunistic key caching support for station.
+ *
+ * @param enable Boolean indicating whether to enable (true) or disable (false) OKC support.
+ */
+void esp_wifi_set_okc_support(bool enable);
+
+/**
+ * @brief Set the domain name for certificate validation
+ *
  * This function sets the expected domain name for validating the certificate's subject name.
  * If the provided domain name does not match the certificate's subject name, validation will fail.
  *

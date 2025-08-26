@@ -29,6 +29,11 @@ typedef void *esp_event_handler_t;
 
 typedef struct esp_mqtt_client *esp_mqtt_client_handle_t;
 
+#define MQTT_OVER_TCP_SCHEME "mqtt"
+#define MQTT_OVER_SSL_SCHEME "mqtts"
+#define MQTT_OVER_WS_SCHEME  "ws"
+#define MQTT_OVER_WSS_SCHEME "wss"
+
 /**
  * @brief *MQTT* event types.
  *
@@ -75,13 +80,13 @@ typedef enum esp_mqtt_event_id_t {
     MQTT_EVENT_BEFORE_CONNECT, /*!< The event occurs before connecting */
     MQTT_EVENT_DELETED,        /*!< Notification on delete of one message from the
                                 internal outbox,        if the message couldn't have been sent
-                                and acknowledged before expiring        defined in
+                                or acknowledged before expiring        defined in
                                 OUTBOX_EXPIRED_TIMEOUT_MS.        (events are not posted upon
                                 deletion of successfully acknowledged messages)
                                   - This event id is posted only if
                                 MQTT_REPORT_DELETED_MESSAGES==1
                                   - Additional context: msg_id (id of the deleted
-                                message).
+                                message, always 0 for QoS = 0 messages).
                                   */
     MQTT_USER_EVENT,            /*!< Custom event used to queue tasks into mqtt event handler
                                  All fields from the esp_mqtt_event_t type could be used to pass
@@ -177,6 +182,11 @@ typedef struct esp_mqtt_error_codes {
     esp_mqtt_connect_return_code_t
     connect_return_code; /*!< connection refused error code reported from
                               *MQTT* broker on connection */
+#ifdef CONFIG_MQTT_PROTOCOL_5
+    esp_mqtt5_error_reason_code_t
+    disconnect_return_code; /*!< disconnection reason code reported from
+                              *MQTT* broker on disconnection */
+#endif
     /* tcp_transport extension */
     int esp_transport_sock_errno; /*!< errno from the underlying socket */
 
@@ -298,6 +308,8 @@ typedef struct esp_mqtt_client_config_t {
             bool use_secure_element; /*!< Enable secure element, available in ESP32-ROOM-32SE, for SSL connection */
             void *ds_data; /*!< Carrier of handle for digital signature parameters, digital signature peripheral is
                    available in some Espressif devices.  It's not copied nor freed by the client, user needs to clean up.*/
+            bool use_ecdsa_peripheral; /*!< Enable ECDSA peripheral, available in some Espressif devices. */
+            uint8_t ecdsa_key_efuse_blk; /*!< ECDSA key block number from efuse, available in some Espressif devices. */
         } authentication; /*!< Client authentication */
     } credentials; /*!< User credentials for broker */
     /**
@@ -336,7 +348,8 @@ typedef struct esp_mqtt_client_config_t {
         int refresh_connection_after_ms; /*!< Refresh connection after this value (in milliseconds) */
         bool disable_auto_reconnect;     /*!< Client will reconnect to server (when errors/disconnect). Set
                                  `disable_auto_reconnect=true` to disable */
-        esp_transport_handle_t transport; /*!< Custom transport handle to use. Warning: The transport should be valid during the client lifetime and is destroyed when esp_mqtt_client_destroy is called. */
+        esp_transport_keep_alive_t tcp_keep_alive_cfg;  /*!< Transport keep-alive config*/
+        esp_transport_handle_t transport; /*!< Custom transport handle to use, leave it NULL to allow MQTT client create or recreate its own. Warning: The transport should be valid during the client lifetime and is destroyed when esp_mqtt_client_destroy is called. */
         struct ifreq * if_name; /*!< The name of interface for data to go through. Use the default interface without setting */
     } network; /*!< Network configuration */
     /**
@@ -661,6 +674,27 @@ int esp_mqtt_client_get_outbox_size(esp_mqtt_client_handle_t client);
  */
 esp_err_t esp_mqtt_dispatch_custom_event(esp_mqtt_client_handle_t client, esp_mqtt_event_t *event);
 
+/**
+ * @brief Get a transport from the scheme
+ *
+ * Allows extra settings to be made on the selected transport,
+ * for convenience the scheme used by the mqtt client are defined as
+ * MQTT_OVER_TCP_SCHEME, MQTT_OVER_SSL_SCHEME, MQTT_OVER_WS_SCHEME and MQTT_OVER_WSS_SCHEME
+ * If the transport_scheme is NULL and the client was set with a custom transport the custom transport will be returned.
+ *
+ * Notes:
+ * - This function should be called only on MQTT_EVENT_BEFORE_CONNECT.
+ * - The intetion is to provide a way to set different configurations than the ones available from client config.
+ * - If esp_mqtt_client_destroy is called the returned pointer will be invalidated.
+ * - All the required settings should be made in the MQTT_EVENT_BEFORE_CONNECT event handler
+ *
+ * @param client            *MQTT* client handle
+ * @param transport_scheme  Transport handle to search for.
+ * @return the transport handle
+ *         NULL in case of error
+ *
+*/
+esp_transport_handle_t esp_mqtt_client_get_transport(esp_mqtt_client_handle_t client, char *transport_scheme);
 #ifdef __cplusplus
 }
 #endif //__cplusplus

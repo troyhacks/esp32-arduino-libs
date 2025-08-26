@@ -49,7 +49,7 @@ typedef enum esp_tls_role {
  */
 typedef struct psk_key_hint {
     const uint8_t* key;                     /*!< key in PSK authentication mode in binary format */
-    const size_t   key_size;                /*!< length of the key */
+    size_t   key_size;                      /*!< length of the key */
     const char* hint;                       /*!< hint in PSK authentication mode in string format */
 } psk_hint_key_t;
 
@@ -193,9 +193,11 @@ typedef struct esp_tls_cfg {
 
     tls_keep_alive_cfg_t *keep_alive_cfg;   /*!< Enable TCP keep-alive timeout for SSL connection */
 
+#if defined(CONFIG_ESP_TLS_PSK_VERIFICATION)
     const psk_hint_key_t* psk_hint_key;     /*!< Pointer to PSK hint and key. if not NULL (and certificates are NULL)
                                                  then PSK authentication is enabled with configured setup.
                                                  Important note: the pointer must be valid for connection */
+#endif /* CONFIG_ESP_TLS_PSK_VERIFICATION */
 
     esp_err_t (*crt_bundle_attach)(void *conf);
                                             /*!< Function pointer to esp_crt_bundle_attach. Enables the use of certification
@@ -316,6 +318,10 @@ typedef struct esp_tls_cfg_server {
     bool use_secure_element;                    /*!< Enable this option to use secure element or
                                                  atecc608a chip */
 
+    uint32_t tls_handshake_timeout_ms;                   /*!< TLS handshake timeout in milliseconds.
+                                                    Note: If this value is not set, by default the timeout is
+                                                    set to 10 seconds. If you wish that the session should wait
+                                                    indefinitely then please use a larger value e.g., INT32_MAX */
 
 #if defined(CONFIG_ESP_TLS_SERVER_SESSION_TICKETS)
     esp_tls_server_session_ticket_ctx_t * ticket_ctx; /*!< Session ticket generation context.
@@ -331,6 +337,12 @@ typedef struct esp_tls_cfg_server {
     esp_tls_handshake_callback cert_select_cb;  /*!< Certificate selection callback that gets called after ClientHello is processed.
                                                      Can be used as an SNI callback, but also has access to other
                                                      TLS extensions, such as ALPN and server_certificate_type . */
+#endif
+
+#if defined(CONFIG_ESP_TLS_PSK_VERIFICATION)
+    const psk_hint_key_t* psk_hint_key;         /*!< Pointer to PSK hint and key. if not NULL (and the certificate/key is NULL)
+                                                  then PSK authentication is enabled with configured setup.
+                                                  Important note: the pointer must be valid for connection */
 #endif
 
 } esp_tls_cfg_server_t;
@@ -697,6 +709,42 @@ mbedtls_x509_crt *esp_tls_get_global_ca_store(void);
  *
  */
 const int *esp_tls_get_ciphersuites_list(void);
+
+/**
+ * @brief      Initialize server side TLS/SSL connection
+ *
+ * This function should be used to initialize the server side TLS/SSL connection when the
+ * application wants to handle the TLS/SSL connection asynchronously with the help of
+ * esp_tls_server_session_continue_async() function.
+ *
+ * @param[in]  cfg      Pointer to esp_tls_cfg_server_t
+ * @param[in]  sockfd   FD of accepted connection
+ * @param[out] tls      Pointer to allocated esp_tls_t
+ *
+ * @return
+ *          - ESP_OK if successful
+ *          - ESP_ERR_INVALID_ARG if invalid arguments
+ *          - ESP_FAIL if server session setup failed
+ */
+esp_err_t esp_tls_server_session_init(esp_tls_cfg_server_t *cfg, int sockfd, esp_tls_t *tls);
+
+/**
+ * @brief      Asynchronous continue of esp_tls_server_session_init
+ *
+ * This function should be called in a loop by the user until it returns 0. If this functions returns
+ * something other than 0, ESP_TLS_ERR_SSL_WANT_READ or ESP_TLS_ERR_SSL_WANT_WRITE,
+ * the esp-tls context must not be used and should be freed using esp_tls_conn_destroy();
+ *
+ * @param[in]  tls  pointer to esp_tls_t
+ *
+ * @return
+ *          - 0  if successful
+ *          - <0 in case of error
+ *          - ESP_TLS_ERR_SSL_WANT_READ/ESP_TLS_ERR_SSL_WANT_WRITE
+ *            if the handshake is incomplete and waiting for data to be available for reading.
+ */
+int esp_tls_server_session_continue_async(esp_tls_t *tls);
+
 #endif /* CONFIG_ESP_TLS_USING_MBEDTLS */
 /**
  * @brief      Create TLS/SSL server session

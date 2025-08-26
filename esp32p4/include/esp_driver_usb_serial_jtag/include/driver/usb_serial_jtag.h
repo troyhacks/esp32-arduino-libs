@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2021-2025 Espressif Systems (Shanghai) CO LTD
+ * SPDX-FileCopyrightText: 2021-2024 Espressif Systems (Shanghai) CO LTD
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -75,6 +75,15 @@ int usb_serial_jtag_read_bytes(void* buf, uint32_t length, TickType_t ticks_to_w
 int usb_serial_jtag_write_bytes(const void* src, size_t size, TickType_t ticks_to_wait);
 
 /**
+ * @brief Blocks until all data written using `usb_serial_jtag_write_bytes` is sent to the host, or until timeout.
+ *
+ * @param ticks_to_wait Maximum timeout in RTOS ticks
+ *
+ * @return ESP_OK when flushed, ESP_ERR_TIMEOUT on timeout.
+ */
+esp_err_t usb_serial_jtag_wait_tx_done(TickType_t ticks_to_wait);
+
+/**
  * @brief Uninstall USB-SERIAL-JTAG driver.
  *
  * @return
@@ -102,27 +111,6 @@ bool usb_serial_jtag_is_connected(void);
  * @return True if driver is installed and False if driver not installed
  */
 bool usb_serial_jtag_is_driver_installed(void);
-
-/**
- * @brief Return the number of bytes available for reading
- *
- * @return the number of bytes available for reading in the buffer
- */
-size_t usb_serial_jtag_get_read_bytes_available(void);
-
-/**
- * @brief Return the readiness status of the driver for read operation
- *
- * @return true if driver read ready, false if not
- */
-bool usb_serial_jtag_read_ready(void);
-
-/**
- * @brief Return the readiness status of the driver for write operation
- *
- * @return true if driver is write ready, false if not
- */
-bool usb_serial_jtag_write_ready(void);
 
 #ifdef __cplusplus
 }

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2023-2025 Espressif Systems (Shanghai) CO LTD
+ * SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -36,7 +36,8 @@ extern "C" {
  *
  * @param enable    Enable/Disable
  */
-static inline void ledc_ll_enable_bus_clock(bool enable) {
+static inline void ledc_ll_enable_bus_clock(bool enable)
+{
     HP_SYS_CLKRST.soc_clk_ctrl3.reg_ledc_apb_clk_en = enable;
 }
 
@@ -47,13 +48,22 @@ static inline void ledc_ll_enable_bus_clock(bool enable) {
 /**
  * @brief Reset whole peripheral register to init value defined by HW design
  */
-static inline void ledc_ll_enable_reset_reg(bool enable) {
+static inline void ledc_ll_enable_reset_reg(bool enable)
+{
     HP_SYS_CLKRST.hp_rst_en1.reg_rst_en_ledc = enable;
 }
 
 /// use a macro to wrap the function, force the caller to use it in a critical section
 /// the critical section needs to declare the __DECLARE_RCC_ATOMIC_ENV variable in advance
 #define ledc_ll_enable_reset_reg(...) (void)__DECLARE_RCC_ATOMIC_ENV; ledc_ll_enable_reset_reg(__VA_ARGS__)
+
+/**
+ * @brief Enable the power for LEDC memory block
+ */
+static inline void ledc_ll_enable_mem_power(bool enable)
+{
+    // No register to control the power for LEDC memory block on P4
+}
 
 /**
  * @brief Enable LEDC function clock
@@ -63,7 +73,8 @@ static inline void ledc_ll_enable_reset_reg(bool enable) {
  *
  * @return None
  */
-static inline void ledc_ll_enable_clock(ledc_dev_t *hw, bool en) {
+static inline void ledc_ll_enable_clock(ledc_dev_t *hw, bool en)
+{
     (void)hw;
     HP_SYS_CLKRST.peri_clk_ctrl22.reg_ledc_clk_en = en;
 }
@@ -461,12 +472,13 @@ static inline void ledc_ll_set_sig_out_en(ledc_dev_t *hw, ledc_mode_t speed_mode
  * @param hw Beginning address of the peripheral registers
  * @param speed_mode LEDC speed_mode, low-speed mode only
  * @param channel_num LEDC channel index (0-5), select from ledc_channel_t
+ * @param duty_start The duty start
  *
  * @return None
  */
-static inline void ledc_ll_set_duty_start(ledc_dev_t *hw, ledc_mode_t speed_mode, ledc_channel_t channel_num)
+static inline void ledc_ll_set_duty_start(ledc_dev_t *hw, ledc_mode_t speed_mode, ledc_channel_t channel_num, bool duty_start)
 {
-    hw->channel_group[speed_mode].channel[channel_num].conf1.duty_start = 1;
+    hw->channel_group[speed_mode].channel[channel_num].conf1.duty_start = duty_start;
 }
 
 /**

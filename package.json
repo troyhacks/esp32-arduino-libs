@@ -12,5 +12,5 @@
     "type": "git",
     "url": "https://github.com/espressif/esp32-arduino-lib-builder"
   },
-  "version": "5.3.0+sha.6fd5a3d3db"
+  "version": "5.5.0+sha.02c5f2dbb9"
 }

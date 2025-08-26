@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2023-2025 Espressif Systems (Shanghai) CO LTD
+ * SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -25,7 +25,7 @@ extern "C" {
 #define PMU_EXT1_WAKEUP_EN              BIT(12)
 #define PMU_LP_TIMER_WAKEUP_EN          BIT(13)
 #define PMU_BOD_WAKEUP_EN               BIT(14)
-#define PMU_VDDBAT_UNDERVOLT_WAKEUP_EN  BIT(15)
+#define PMU_VBAT_UNDERVOLT_WAKEUP_EN    BIT(15)
 #define PMU_LP_CORE_TRAP_WAKEUP_EN      BIT(16)
 #define PMU_ETM_WAKEUP_EN               BIT(17)
 #define PMU_LP_TIMER1_WAKEUP_EN         BIT(18)

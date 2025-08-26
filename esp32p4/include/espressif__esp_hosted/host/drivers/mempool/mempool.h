@@ -9,7 +9,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <sys/queue.h>
-#include "os_wrapper.h"
+#include "port_esp_hosted_host_os.h"
 
 
 #define MEMPOOL_OK                       0
@@ -30,7 +30,7 @@
 #define MEMSET_NOT_REQUIRED              0
 
 
-#ifdef CONFIG_USE_MEMPOOL
+#ifdef H_USE_MEMPOOL
 struct mempool_entry {
 	SLIST_ENTRY(mempool_entry) entries;
 };

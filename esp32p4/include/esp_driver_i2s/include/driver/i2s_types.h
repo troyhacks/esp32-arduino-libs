@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020-2024 Espressif Systems (Shanghai) CO LTD
+ * SPDX-FileCopyrightText: 2020-2025 Espressif Systems (Shanghai) CO LTD
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -63,6 +63,15 @@ typedef enum {
 } i2s_mclk_multiple_t;
 
 /**
+ * @brief LP I2S transaction type
+ */
+typedef struct {
+    void   *buffer;           ///< Pointer to buffer
+    size_t  buflen;           ///< Buffer len, this should be in the multiple of 4
+    size_t  received_size;    ///< Received size
+} lp_i2s_trans_t;
+
+/**
  * @brief Event structure used in I2S event queue
  */
 typedef struct {
@@ -78,7 +87,46 @@ typedef struct {
                                   */
 } i2s_event_data_t;
 
-typedef struct i2s_channel_obj_t    *i2s_chan_handle_t; /*!< I2S channel object handle, the control unit of the I2S driver*/
+/**
+ * @brief I2S clock tuning operation
+ *
+ */
+typedef enum {
+    I2S_TUNING_MODE_ADDSUB,                 /*!< Add or subtract the tuning value based on the current clock */
+    I2S_TUNING_MODE_SET,                    /*!< Set the tuning value to overwrite the current clock */
+    I2S_TUNING_MODE_RESET,                  /*!< Set the clock to the initial value */
+} i2s_tuning_mode_t;
+
+/**
+ * @brief I2S clock tuning configurations
+ *
+ */
+typedef struct {
+    i2s_tuning_mode_t   tune_mode;          /*!< Tuning mode, which decides how to tune the MCLK with the tuning value */
+    int32_t             tune_mclk_val;      /*!< Tuning value */
+    int32_t             max_delta_mclk;     /*!< The maximum frequency that can be increased comparing to the initial MCLK freuqnecy */
+    int32_t             min_delta_mclk;     /*!< The minimum frequency that can be decreased comparing to the initial MCLK freuqnecy */
+} i2s_tuning_config_t;
+
+/**
+ * @brief I2S clock tuning result
+ *
+ */
+typedef struct {
+    int32_t             curr_mclk_hz;        /*!< The current MCLK frequency after tuned */
+    int32_t             delta_mclk_hz;       /*!< The current changed MCLK frequency comparing to the initial MCLK frequency */
+    uint32_t            water_mark;          /*!< The water mark of the internal buffer, in percent */
+} i2s_tuning_info_t;
+
+/**
+ * @brief Event data structure for LP I2S
+ */
+typedef struct {
+    lp_i2s_trans_t trans;    ///< LP I2S transaction
+} lp_i2s_evt_data_t;
+
+typedef struct i2s_channel_obj_t       *i2s_chan_handle_t;     /*!< I2S channel object handle, the control unit of the I2S driver*/
+typedef struct lp_i2s_channel_obj_t    *lp_i2s_chan_handle_t;  /*!< I2S channel object handle, the control unit of the I2S driver*/
 
 /**
  * @brief I2S event callback
@@ -89,6 +137,17 @@ typedef struct i2s_channel_obj_t    *i2s_chan_handle_t; /*!< I2S channel object 
  * @return Whether a high priority task has been waken up by this callback function
  */
 typedef bool (*i2s_isr_callback_t)(i2s_chan_handle_t handle, i2s_event_data_t *event, void *user_ctx);
+
+/**
+ * @brief LP I2S event callback type
+ *
+ * @param[in] handle     LP I2S channel handle
+ * @param[in] event      Event data
+ * @param[in] user_ctx   User data
+ *
+ * @return Whether a high priority task has been waken up by this callback function
+ */
+typedef bool (*lp_i2s_callback_t)(lp_i2s_chan_handle_t handle, lp_i2s_evt_data_t *event, void *user_ctx);
 
 #ifdef __cplusplus
 }

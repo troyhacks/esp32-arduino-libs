@@ -34,6 +34,18 @@ extern "C" {
 #define LEDC_ERR_VAL            (-1)
 
 /**
+ * @brief Strategies to be applied to the LEDC channel during system Light-sleep period
+ */
+typedef enum {
+    LEDC_SLEEP_MODE_NO_ALIVE_NO_PD = 0,  /*!< The default mode: no LEDC output, and no power off the LEDC power domain. */
+    LEDC_SLEEP_MODE_NO_ALIVE_ALLOW_PD,   /*!< The low-power-consumption mode: no LEDC output, and allow to power off the LEDC power domain.
+                                              This can save power, but at the expense of more RAM being consumed to save register context.
+                                              This option is only available on targets that support TOP domain to be powered down. */
+    LEDC_SLEEP_MODE_KEEP_ALIVE,          /*!< The high-power-consumption mode: keep LEDC output when the system enters Light-sleep. */
+    LEDC_SLEEP_MODE_INVALID,             /*!< Invalid LEDC sleep mode strategy */
+} ledc_sleep_mode_t;
+
+/**
  * @brief Configuration parameters of LEDC channel for ledc_channel_config function
  */
 typedef struct {
@@ -44,6 +56,7 @@ typedef struct {
     ledc_timer_t timer_sel;         /*!< Select the timer source of channel (0 - LEDC_TIMER_MAX-1) */
     uint32_t duty;                  /*!< LEDC channel duty, the range of duty setting is [0, (2**duty_resolution)] */
     int hpoint;                     /*!< LEDC channel hpoint value, the range is [0, (2**duty_resolution)-1] */
+    ledc_sleep_mode_t sleep_mode;   /*!< choose the desired behavior for the LEDC channel in Light-sleep */
     struct {
         unsigned int output_invert: 1;/*!< Enable (1) or disable (0) gpio output invert */
     } flags;                        /*!< LEDC flags */
@@ -175,13 +188,13 @@ esp_err_t ledc_update_duty(ledc_mode_t speed_mode, ledc_channel_t channel);
  *
  * @param  gpio_num The LEDC output gpio
  * @param  speed_mode Select the LEDC channel group with specified speed mode. Note that not all targets support high speed mode.
- * @param  ledc_channel LEDC channel (0 - LEDC_CHANNEL_MAX-1), select from ledc_channel_t
+ * @param  channel LEDC channel (0 - LEDC_CHANNEL_MAX-1), select from ledc_channel_t
  *
  * @return
  *     - ESP_OK Success
  *     - ESP_ERR_INVALID_ARG Parameter error
  */
-esp_err_t ledc_set_pin(int gpio_num, ledc_mode_t speed_mode, ledc_channel_t ledc_channel);
+esp_err_t ledc_set_pin(int gpio_num, ledc_mode_t speed_mode, ledc_channel_t channel);
 
 /**
  * @brief LEDC stop.
@@ -337,7 +350,13 @@ esp_err_t ledc_set_fade(ledc_mode_t speed_mode, ledc_channel_t channel, uint32_t
 esp_err_t ledc_isr_register(void (*fn)(void *), void *arg, int intr_alloc_flags, ledc_isr_handle_t *handle);
 
 /**
- * @brief Configure LEDC settings
+ * @brief Configure LEDC timer settings
+ *
+ * This function does not take care of whether the chosen clock source is enabled or not, also does not handle the clock source
+ * to meet channel sleep mode choice.
+ *
+ * If the chosen clock source is a new clock source to the LEDC timer, please use `ledc_timer_config`;
+ * If the clock source is kept to be the same, but frequency needs to be updated, please use `ledc_set_freq`.
  *
  * @param speed_mode Select the LEDC channel group with specified speed mode. Note that not all targets support high speed mode.
  * @param timer_sel  Timer index (0-3), there are 4 timers in LEDC module
@@ -349,7 +368,7 @@ esp_err_t ledc_isr_register(void (*fn)(void *), void *arg, int intr_alloc_flags,
  *     - (-1) Parameter error
  *     - Other Current LEDC duty
  */
-esp_err_t ledc_timer_set(ledc_mode_t speed_mode, ledc_timer_t timer_sel, uint32_t clock_divider, uint32_t duty_resolution, ledc_clk_src_t clk_src);
+esp_err_t ledc_timer_set(ledc_mode_t speed_mode, ledc_timer_t timer_sel, uint32_t clock_divider, uint32_t duty_resolution, ledc_clk_src_t clk_src) __attribute__((deprecated("Please use ledc_timer_config() or ledc_set_freq()")));
 
 /**
  * @brief Reset LEDC timer

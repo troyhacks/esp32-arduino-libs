@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
+ * SPDX-FileCopyrightText: 2023-2025 Espressif Systems (Shanghai) CO LTD
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -76,7 +76,7 @@ typedef enum {
 
 // SPI base command
 typedef enum {
-     /* Slave HD Only */
+    /* Slave HD Only */
     SPI_LL_BASE_CMD_HD_WRBUF    = 0x01,
     SPI_LL_BASE_CMD_HD_RDBUF    = 0x02,
     SPI_LL_BASE_CMD_HD_WRDMA    = 0x03,
@@ -98,9 +98,9 @@ typedef enum {
  * @param host_id   Peripheral index number, see `spi_host_device_t`
  * @param enable    Enable/Disable
  */
-static inline void spi_ll_enable_bus_clock(spi_host_device_t host_id, bool enable) {
-    switch (host_id)
-    {
+static inline void _spi_ll_enable_bus_clock(spi_host_device_t host_id, bool enable)
+{
+    switch (host_id) {
     case SPI2_HOST:
         HP_SYS_CLKRST.soc_clk_ctrl1.reg_gpspi2_sys_clk_en = enable;
         HP_SYS_CLKRST.soc_clk_ctrl2.reg_gpspi2_apb_clk_en = enable;
@@ -115,16 +115,16 @@ static inline void spi_ll_enable_bus_clock(spi_host_device_t host_id, bool enabl
 
 /// use a macro to wrap the function, force the caller to use it in a critical section
 /// the critical section needs to declare the __DECLARE_RCC_ATOMIC_ENV variable in advance
-#define spi_ll_enable_bus_clock(...) (void)__DECLARE_RCC_ATOMIC_ENV; spi_ll_enable_bus_clock(__VA_ARGS__)
+#define spi_ll_enable_bus_clock(...) (void)__DECLARE_RCC_ATOMIC_ENV; _spi_ll_enable_bus_clock(__VA_ARGS__)
 
 /**
  * Reset whole peripheral register to init value defined by HW design
  *
  * @param host_id   Peripheral index number, see `spi_host_device_t`
  */
-static inline void spi_ll_reset_register(spi_host_device_t host_id) {
-    switch (host_id)
-    {
+static inline void spi_ll_reset_register(spi_host_device_t host_id)
+{
+    switch (host_id) {
     case SPI2_HOST:
         HP_SYS_CLKRST.hp_rst_en2.reg_rst_en_spi2 = 1;
         HP_SYS_CLKRST.hp_rst_en2.reg_rst_en_spi2 = 0;
@@ -147,10 +147,9 @@ static inline void spi_ll_reset_register(spi_host_device_t host_id) {
  * @param host_id   Peripheral index number, see `spi_host_device_t`
  * @param enable    Enable/Disable
  */
-static inline void spi_ll_enable_clock(spi_host_device_t host_id, bool enable)
+static inline void _spi_ll_enable_clock(spi_host_device_t host_id, bool enable)
 {
-    switch (host_id)
-    {
+    switch (host_id) {
     case SPI2_HOST:
         HP_SYS_CLKRST.peri_clk_ctrl116.reg_gpspi2_hs_clk_en = enable;
         HP_SYS_CLKRST.peri_clk_ctrl116.reg_gpspi2_mst_clk_en = enable;
@@ -165,7 +164,7 @@ static inline void spi_ll_enable_clock(spi_host_device_t host_id, bool enable)
 
 /// use a macro to wrap the function, force the caller to use it in a critical section
 /// the critical section needs to declare the __DECLARE_RCC_ATOMIC_ENV variable in advance
-#define spi_ll_enable_clock(...) (void)__DECLARE_RCC_ATOMIC_ENV; spi_ll_enable_clock(__VA_ARGS__)
+#define spi_ll_enable_clock(...) (void)__DECLARE_RCC_ATOMIC_ENV; _spi_ll_enable_clock(__VA_ARGS__)
 
 /**
  * Select SPI peripheral clock source (master).
@@ -216,11 +215,11 @@ __attribute__((always_inline))
 static inline void spi_ll_clk_source_pre_div(spi_dev_t *hw, uint8_t hs_div, uint8_t mst_div)
 {
     if (hw == &GPSPI2) {
-        HP_SYS_CLKRST.peri_clk_ctrl116.reg_gpspi2_hs_clk_div_num = hs_div - 1;
-        HP_SYS_CLKRST.peri_clk_ctrl116.reg_gpspi2_mst_clk_div_num = mst_div - 1;
+        HAL_FORCE_MODIFY_U32_REG_FIELD(HP_SYS_CLKRST.peri_clk_ctrl116, reg_gpspi2_hs_clk_div_num, hs_div - 1);
+        HAL_FORCE_MODIFY_U32_REG_FIELD(HP_SYS_CLKRST.peri_clk_ctrl116, reg_gpspi2_mst_clk_div_num, mst_div - 1);
     } else if (hw == &GPSPI3) {
-        HP_SYS_CLKRST.peri_clk_ctrl117.reg_gpspi3_hs_clk_div_num = hs_div - 1;
-        HP_SYS_CLKRST.peri_clk_ctrl117.reg_gpspi3_mst_clk_div_num = mst_div - 1;
+        HAL_FORCE_MODIFY_U32_REG_FIELD(HP_SYS_CLKRST.peri_clk_ctrl117, reg_gpspi3_hs_clk_div_num, hs_div - 1);
+        HAL_FORCE_MODIFY_U32_REG_FIELD(HP_SYS_CLKRST.peri_clk_ctrl117, reg_gpspi3_mst_clk_div_num, mst_div - 1);
     }
 }
 
@@ -324,7 +323,7 @@ static inline void spi_ll_apply_config(spi_dev_t *hw)
 
 /**
  * Trigger start of user-defined transaction.
- * The synchronization between two clock domains is required in ESP32-S3
+ * The synchronization between two clock domains is required in ESP32P4
  *
  * @param hw Beginning address of the peripheral registers.
  */
@@ -785,6 +784,7 @@ static inline void spi_ll_master_set_clock_by_reg(spi_dev_t *hw, const spi_ll_cl
  *
  * @return     Frequency of given dividers.
  */
+__attribute__((always_inline))
 static inline int spi_ll_freq_for_pre_n(int fapb, int pre, int n)
 {
     return (fapb / (pre * n));
@@ -800,6 +800,7 @@ static inline int spi_ll_freq_for_pre_n(int fapb, int pre, int n)
  *
  * @return           Actual (nearest) frequency.
  */
+__attribute__((always_inline))
 static inline int spi_ll_master_cal_clock(int fapb, int hz, int duty_cycle, spi_ll_clock_val_t *out_reg)
 {
     typeof(GPSPI2.clock) reg = {.val = 0};
@@ -938,7 +939,7 @@ static inline void spi_ll_master_set_cs_hold(spi_dev_t *hw, int hold)
 /**
  * Set the delay of SPI clocks before the first SPI clock after the CS active edge.
  *
- * Note ESP32 doesn't support to use this feature when command/address phases
+ * Note ESP32P4 doesn't support to use this feature when command/address phases
  * are used in full duplex mode.
  *
  * @param hw    Beginning address of the peripheral registers.
@@ -1097,7 +1098,9 @@ static inline void spi_ll_set_command(spi_dev_t *hw, uint16_t cmd, int cmdlen, b
 static inline void spi_ll_set_dummy(spi_dev_t *hw, int dummy_n)
 {
     hw->user.usr_dummy = dummy_n ? 1 : 0;
-    HAL_FORCE_MODIFY_U32_REG_FIELD(hw->user1, usr_dummy_cyclelen, dummy_n - 1);
+    if (dummy_n > 0) {
+        HAL_FORCE_MODIFY_U32_REG_FIELD(hw->user1, usr_dummy_cyclelen, dummy_n - 1);
+    }
 }
 
 /**
@@ -1263,8 +1266,7 @@ static inline uint32_t spi_ll_slave_hd_get_last_addr(spi_dev_t *hw)
 static inline uint8_t spi_ll_get_slave_hd_base_command(spi_command_t cmd_t)
 {
     uint8_t cmd_base = 0x00;
-    switch (cmd_t)
-    {
+    switch (cmd_t) {
     case SPI_CMD_HD_WRBUF:
         cmd_base = SPI_LL_BASE_CMD_HD_WRBUF;
         break;

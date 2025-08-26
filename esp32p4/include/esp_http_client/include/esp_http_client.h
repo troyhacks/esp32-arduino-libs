@@ -116,6 +116,7 @@ typedef enum {
     HTTP_METHOD_PROPFIND,   /*!< HTTP PROPFIND Method */
     HTTP_METHOD_PROPPATCH,  /*!< HTTP PROPPATCH Method */
     HTTP_METHOD_MKCOL,      /*!< HTTP MKCOL Method */
+    HTTP_METHOD_REPORT,     /*!< HTTP REPORT Method */
     HTTP_METHOD_MAX,
 } esp_http_client_method_t;
 
@@ -154,10 +155,20 @@ typedef struct {
     esp_http_client_auth_type_t auth_type;           /*!< Http authentication type, see `esp_http_client_auth_type_t` */
     const char                  *path;               /*!< HTTP Path, if not set, default is `/` */
     const char                  *query;              /*!< HTTP query */
-    const char                  *cert_pem;           /*!< SSL server certification, PEM format as string, if the client requires to verify server */
-    size_t                      cert_len;            /*!< Length of the buffer pointed to by cert_pem. May be 0 for null-terminated pem */
-    const char                  *client_cert_pem;    /*!< SSL client certification, PEM format as string, if the server requires to verify client */
-    size_t                      client_cert_len;     /*!< Length of the buffer pointed to by client_cert_pem. May be 0 for null-terminated pem */
+    union {
+        const char              *cert_pem;           /*!< SSL server certification, PEM format as string, if the client requires to verify server */
+        const char              *cert_der;           /*!< SSL server certification, DER format as binary, if the client requires to verify server */
+    };
+    size_t                      cert_len;            /*!< Length of the buffer pointed to by cert_pem or cert_der.
+                                                     PEM Certificate - Length of the buffer pointed to by cert_pem. Length should be the length of the certificate including NULL terminator or 0.
+                                                     DER Certificate - Length of the buffer pointed to by cert_der. Should be the length of the certificate. */
+    union {
+        const char              *client_cert_pem;    /*!< SSL client certification, PEM format as string, if the server requires to verify client */
+        const char              *client_cert_der;    /*!< SSL client certification, DER format as binary, if the server requires to verify client */
+    };
+    size_t                      client_cert_len;     /*!< Length of the buffer pointed to by client_cert_pem or client_cert_der.
+                                                     PEM Certificate - Length of the buffer pointed to by client_cert_pem. Length should be the length of the certificate including NULL terminator or 0.
+                                                     DER Certificate - Length of the buffer pointed to by client_cert_der. Should be the length of the certificate. */
     const char                  *client_key_pem;     /*!< SSL client key, PEM format as string, if the server requires to verify client */
     size_t                      client_key_len;      /*!< Length of the buffer pointed to by client_key_pem. May be 0 for null-terminated pem */
     const char                  *client_key_password;      /*!< Client key decryption password string */
@@ -191,6 +202,10 @@ typedef struct {
     int                         keep_alive_interval; /*!< Keep-alive interval time. Default is 5 (second) */
     int                         keep_alive_count;    /*!< Keep-alive packet retry send count. Default is 3 counts */
     struct ifreq                *if_name;            /*!< The name of interface for data to go through. Use the default interface without setting */
+#if CONFIG_ESP_HTTP_CLIENT_ENABLE_HTTPS
+    const char                  **alpn_protos;       /*!< Application protocols required for HTTP2. If HTTP2/ALPN support is required, a list of protocols that should be negotiated. The format is length followed by protocol
+                                                     name. For the most common cases the following is ok: const char **alpn_protos = { "h2", NULL }; - where 'h2' is the protocol name */
+#endif
 #if CONFIG_ESP_TLS_USE_SECURE_ELEMENT
     bool use_secure_element;                /*!< Enable this option to use secure element */
 #endif
@@ -222,6 +237,7 @@ typedef enum {
     HttpStatus_MovedPermanently  = 301,
     HttpStatus_Found             = 302,
     HttpStatus_SeeOther          = 303,
+    HttpStatus_NotModified       = 304,
     HttpStatus_TemporaryRedirect = 307,
     HttpStatus_PermanentRedirect = 308,
 
@@ -230,6 +246,7 @@ typedef enum {
     HttpStatus_Unauthorized      = 401,
     HttpStatus_Forbidden         = 403,
     HttpStatus_NotFound          = 404,
+    HttpStatus_RangeNotSatisfiable = 416,
 
     /* 5xx - Server Error */
     HttpStatus_InternalError     = 500
@@ -244,6 +261,8 @@ typedef enum {
 #define ESP_ERR_HTTP_CONNECTING         (ESP_ERR_HTTP_BASE + 6)     /*!< HTTP connection hasn't been established yet */
 #define ESP_ERR_HTTP_EAGAIN             (ESP_ERR_HTTP_BASE + 7)     /*!< Mapping of errno EAGAIN to esp_err_t */
 #define ESP_ERR_HTTP_CONNECTION_CLOSED  (ESP_ERR_HTTP_BASE + 8)     /*!< Read FIN from peer and the connection closed */
+#define ESP_ERR_HTTP_NOT_MODIFIED       (ESP_ERR_HTTP_BASE + 9)     /*!< HTTP 304 Not Modified, no update available */
+#define ESP_ERR_HTTP_RANGE_NOT_SATISFIABLE (ESP_ERR_HTTP_BASE + 10) /*!< HTTP 416 Range Not Satisfiable, requested range in header is incorrect */
 
 /**
  * @brief      Start a HTTP session
@@ -523,6 +542,17 @@ esp_err_t esp_http_client_set_timeout_ms(esp_http_client_handle_t client, int ti
 esp_err_t esp_http_client_delete_header(esp_http_client_handle_t client, const char *key);
 
 /**
+ * @brief      Delete all http request headers
+ *
+ * @param[in]  client  The esp_http_client handle
+ *
+ * @return
+ *  - ESP_OK
+ *  - ESP_FAIL
+ */
+esp_err_t esp_http_client_delete_all_headers(esp_http_client_handle_t client);
+
+/**
  * @brief      This function will be open the connection, write all header strings and return
  *
  * @param[in]  client     The esp_http_client handle
@@ -693,8 +723,15 @@ esp_err_t esp_http_client_set_auth_data(esp_http_client_handle_t client, const c
  *             to flush off body data after calling this API.
  *
  * @param[in]  client   The esp_http_client handle
+ *
+ * @return
+ *             - ESP_OK: Successfully added the authentication information.
+ *             - ESP_ERR_INVALID_ARG: Invalid client handle passed.
+ *             - ESP_ERR_NO_MEM: Memory allocation failed for the required fields.
+ *             - ESP_ERR_NOT_SUPPORTED: Unsupported authentication type in the header.
+ *             - ESP_FAIL: Failed to add authentication information due to other reasons.
  */
-void esp_http_client_add_auth(esp_http_client_handle_t client);
+esp_err_t esp_http_client_add_auth(esp_http_client_handle_t client);
 
 /**
  * @brief      Checks if entire data in the response has been read without any error.

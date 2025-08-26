@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
+ * SPDX-FileCopyrightText: 2023-2025 Espressif Systems (Shanghai) CO LTD
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -34,14 +34,13 @@ extern "C" {
 #define LP_ADC_FORCE_XPD_SAR_PD  2 // Force power down
 #define LP_ADC_FORCE_XPD_SAR_PU  3 // Force power up
 
-#define ADC_LL_NEED_APB_PERIPH_CLAIM(ADC_UNIT)      (((ADC_UNIT) == ADC_UNIT_1) ? 0 : 1)
-
 /*---------------------------------------------------------------
                     Oneshot
 ---------------------------------------------------------------*/
 #define ADC_LL_DATA_INVERT_DEFAULT(PERIPH_NUM)         (0)
 #define ADC_LL_SAR_CLK_DIV_DEFAULT(PERIPH_NUM)         (1)
-#define ADC_LL_DELAY_CYCLE_AFTER_DONE_SIGNAL           (0)
+#define LP_ADC_LL_SAR_CLK_DIV_DEFAULT(PERIPH_NUM)      (2)
+#define ADC_LL_DELAY_CYCLE_AFTER_DONE_SIGNAL           (10)
 
 /*---------------------------------------------------------------
                     DMA
@@ -136,7 +135,7 @@ static inline void adc_ll_digi_set_fsm_time(uint32_t rst_wait, uint32_t start_wa
  */
 static inline void adc_ll_set_sample_cycle(uint32_t sample_cycle)
 {
-    /* Peripheral reg i2c has powered up in rtc_init, write directly */
+    /* Analog i2c master clock needs to be enabled for regi2c operations (done inside REGI2C_WRITE_MASK) */
     REGI2C_WRITE_MASK(I2C_SAR_ADC, ADC_SAR1_SAMPLE_CYCLE_ADDR, sample_cycle);
 }
 
@@ -206,8 +205,8 @@ static inline void adc_ll_digi_set_convert_mode(adc_ll_digi_convert_mode_t mode)
 static inline void adc_ll_digi_controller_clk_div(uint32_t div_num, uint32_t div_b, uint32_t div_a)
 {
     HAL_FORCE_MODIFY_U32_REG_FIELD(HP_SYS_CLKRST.peri_clk_ctrl23, reg_adc_clk_div_num, div_num);
-    HP_SYS_CLKRST.peri_clk_ctrl23.reg_adc_clk_div_numerator = div_a;
-    HP_SYS_CLKRST.peri_clk_ctrl23.reg_adc_clk_div_denominator = div_b;
+    HAL_FORCE_MODIFY_U32_REG_FIELD(HP_SYS_CLKRST.peri_clk_ctrl23, reg_adc_clk_div_numerator, div_a);
+    HAL_FORCE_MODIFY_U32_REG_FIELD(HP_SYS_CLKRST.peri_clk_ctrl23, reg_adc_clk_div_denominator, div_b);
 }
 
 /**
@@ -495,6 +494,22 @@ static inline uint32_t adc_ll_pwdet_get_cct(void)
                     Common setting
 ---------------------------------------------------------------*/
 
+static inline void _adc_ll_sar1_clock_force_en(bool enable)
+{
+    HP_SYS_CLKRST.clk_force_on_ctrl0.reg_sar1_clk_force_on = enable;
+}
+
+// HP_SYS_CLKRST.clk_force_on_ctrl0 are shared registers, so this function must be used in an atomic way
+#define adc_ll_sar1_clock_force_en(...) (void)__DECLARE_RCC_ATOMIC_ENV; _adc_ll_sar1_clock_force_en(__VA_ARGS__)
+
+static inline void _adc_ll_sar2_clock_force_en(bool enable)
+{
+    HP_SYS_CLKRST.clk_force_on_ctrl0.reg_sar2_clk_force_on = enable;
+}
+
+// HP_SYS_CLKRST.clk_force_on_ctrl0 are shared registers, so this function must be used in an atomic way
+#define adc_ll_sar2_clock_force_en(...) (void)__DECLARE_RCC_ATOMIC_ENV; _adc_ll_sar2_clock_force_en(__VA_ARGS__)
+
 /**
  * @brief Enable the ADC clock
  * @param enable true to enable, false to disable
@@ -618,8 +633,8 @@ static inline void adc_ll_set_controller(adc_unit_t adc_n, adc_ll_controller_t c
                 break;
             case ADC_LL_CTRL_ULP:
                 LP_ADC.meas1_mux.sar1_dig_force       = 0;    // 1: Select digital control;       0: Select RTC control.
-                LP_ADC.meas1_ctrl2.meas1_start_force  = 0;    // 1: SW control RTC ADC start;     0: ULP control RTC ADC start.
-                LP_ADC.meas1_ctrl2.sar1_en_pad_force  = 0;    // 1: SW control RTC ADC bit map;   0: ULP control RTC ADC bit map;
+                LP_ADC.meas1_ctrl2.meas1_start_force  = 1;    // 1: SW control RTC ADC start;     0: ULP control RTC ADC start.
+                LP_ADC.meas1_ctrl2.sar1_en_pad_force  = 1;    // 1: SW control RTC ADC bit map;   0: ULP control RTC ADC bit map;
                 break;
             case ADC_LL_CTRL_DIG:
                 LP_ADC.meas1_mux.sar1_dig_force       = 1;    // 1: Select digital control;       0: Select RTC control.
@@ -638,8 +653,8 @@ static inline void adc_ll_set_controller(adc_unit_t adc_n, adc_ll_controller_t c
                 break;
             case ADC_LL_CTRL_ULP:
                 LP_ADC.meas2_mux.sar2_rtc_force       = 0;    // 1: Select digital control;       0: Select RTC control.
-                LP_ADC.meas2_ctrl2.meas2_start_force  = 0;    // 1: SW control RTC ADC start;     0: ULP control RTC ADC start.
-                LP_ADC.meas2_ctrl2.sar2_en_pad_force  = 0;    // 1: SW control RTC ADC bit map;   0: ULP control RTC ADC bit map;
+                LP_ADC.meas2_ctrl2.meas2_start_force  = 1;    // 1: SW control RTC ADC start;     0: ULP control RTC ADC start.
+                LP_ADC.meas2_ctrl2.sar2_en_pad_force  = 1;    // 1: SW control RTC ADC bit map;   0: ULP control RTC ADC bit map;
                 break;
             case ADC_LL_CTRL_DIG:
                 LP_ADC.meas2_mux.sar2_rtc_force       = 0;    // 1: Select digital control;       0: Select RTC control.
@@ -649,6 +664,86 @@ static inline void adc_ll_set_controller(adc_unit_t adc_n, adc_ll_controller_t c
             default:
                 break;
         }
+    }
+}
+
+/*---------------------------------------------------------------
+                    Calibration
+---------------------------------------------------------------*/
+
+/**
+ * @brief Set common calibration configuration. Should be shared with other parts (PWDET).
+ */
+__attribute__((always_inline))
+static inline void adc_ll_calibration_init(adc_unit_t adc_n)
+{
+    if (adc_n == ADC_UNIT_1) {
+        REGI2C_WRITE_MASK(I2C_SAR_ADC, ADC_SAR1_DREF_ADDR, 4);
+    } else {
+        REGI2C_WRITE_MASK(I2C_SAR_ADC, ADC_SAR2_DREF_ADDR, 4);
+    }
+}
+
+/**
+ * Configure the registers for ADC calibration. You need to call the ``adc_ll_calibration_finish`` interface to resume after calibration.
+ *
+ * @note  Different ADC units and different attenuation options use different calibration data (initial data).
+ *
+ * @param adc_n ADC index number.
+ * @param internal_gnd true:  Disconnect from the IO port and use the internal GND as the calibration voltage.
+ *                     false: Use IO external voltage as calibration voltage.
+ */
+static inline void adc_ll_calibration_prepare(adc_unit_t adc_n, bool internal_gnd)
+{
+    /* Enable/disable internal connect GND (for calibration). */
+    if (adc_n == ADC_UNIT_1) {
+        if (internal_gnd) {
+            REGI2C_WRITE_MASK(I2C_SAR_ADC, ADC_SAR1_ENCAL_GND_ADDR, 1);
+        } else {
+            REGI2C_WRITE_MASK(I2C_SAR_ADC, ADC_SAR1_ENCAL_GND_ADDR, 0);
+        }
+    } else {
+        if (internal_gnd) {
+            REGI2C_WRITE_MASK(I2C_SAR_ADC, ADC_SAR2_ENCAL_GND_ADDR, 1);
+        } else {
+            REGI2C_WRITE_MASK(I2C_SAR_ADC, ADC_SAR2_ENCAL_GND_ADDR, 0);
+        }
+    }
+}
+
+/**
+ * Resume register status after calibration.
+ *
+ * @param adc_n ADC index number.
+ */
+static inline void adc_ll_calibration_finish(adc_unit_t adc_n)
+{
+    if (adc_n == ADC_UNIT_1) {
+        REGI2C_WRITE_MASK(I2C_SAR_ADC, ADC_SAR1_ENCAL_GND_ADDR, 0);
+    } else {    //adc_n == ADC_UNIT_2
+        REGI2C_WRITE_MASK(I2C_SAR_ADC, ADC_SAR2_ENCAL_GND_ADDR, 0);
+    }
+}
+
+/**
+ * Set the calibration result to ADC.
+ *
+ * @note  Different ADC units and different attenuation options use different calibration data (initial data).
+ *
+ * @param adc_n ADC index number.
+ */
+__attribute__((always_inline))
+static inline void adc_ll_set_calibration_param(adc_unit_t adc_n, uint32_t param)
+{
+    uint8_t msb = param >> 8;
+    uint8_t lsb = param & 0xFF;
+
+    if (adc_n == ADC_UNIT_1) {
+        REGI2C_WRITE_MASK(I2C_SAR_ADC, ADC_SAR1_INITIAL_CODE_HIGH_ADDR, msb);
+        REGI2C_WRITE_MASK(I2C_SAR_ADC, ADC_SAR1_INITIAL_CODE_LOW_ADDR, lsb);
+    } else {
+        REGI2C_WRITE_MASK(I2C_SAR_ADC, ADC_SAR2_INITIAL_CODE_HIGH_ADDR, msb);
+        REGI2C_WRITE_MASK(I2C_SAR_ADC, ADC_SAR2_INITIAL_CODE_LOW_ADDR, lsb);
     }
 }
 

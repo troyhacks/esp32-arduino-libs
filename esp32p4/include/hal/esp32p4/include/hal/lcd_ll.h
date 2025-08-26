@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2022-2024 Espressif Systems (Shanghai) CO LTD
+ * SPDX-FileCopyrightText: 2022-2025 Espressif Systems (Shanghai) CO LTD
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -359,8 +359,12 @@ static inline void lcd_ll_set_phase_cycles(lcd_cam_dev_t *dev, uint32_t cmd_cycl
     dev->lcd_user.lcd_dummy = (dummy_cycles > 0);
     dev->lcd_user.lcd_dout = (data_cycles > 0);
     dev->lcd_user.lcd_cmd_2_cycle_en = cmd_cycles > 1;
-    dev->lcd_user.lcd_dummy_cyclelen = dummy_cycles - 1;
-    dev->lcd_user.lcd_dout_cyclelen = data_cycles - 1;
+    if (dummy_cycles > 0) {
+        dev->lcd_user.lcd_dummy_cyclelen = dummy_cycles - 1;
+    }
+    if (data_cycles > 0) {
+        dev->lcd_user.lcd_dout_cyclelen = data_cycles - 1;
+    }
 }
 
 /**
@@ -373,8 +377,12 @@ static inline void lcd_ll_set_phase_cycles(lcd_cam_dev_t *dev, uint32_t cmd_cycl
 static inline void lcd_ll_set_blank_cycles(lcd_cam_dev_t *dev, uint32_t fk_cycles, uint32_t bk_cycles)
 {
     dev->lcd_misc.lcd_bk_en = (fk_cycles || bk_cycles);
-    dev->lcd_misc.lcd_vfk_cyclelen = fk_cycles - 1;
-    dev->lcd_misc.lcd_vbk_cyclelen = bk_cycles - 1;
+    if (fk_cycles > 0) {
+        dev->lcd_misc.lcd_vfk_cyclelen = fk_cycles - 1;
+    }
+    if (bk_cycles > 0) {
+        dev->lcd_misc.lcd_vbk_cyclelen = bk_cycles - 1;
+    }
 }
 
 /**
@@ -726,6 +734,12 @@ static inline void lcd_ll_enable_interrupt(lcd_cam_dev_t *dev, uint32_t mask, bo
         dev->lc_dma_int_ena.val &= ~(mask & 0x03);
     }
 }
+/// use a macro to wrap the function, force the caller to use it in a critical section
+/// the critical section needs to declare the __DECLARE_RCC_ATOMIC_ENV variable in advance
+#define lcd_ll_enable_interrupt(...) do { \
+        (void)__DECLARE_RCC_ATOMIC_ENV; \
+        lcd_ll_enable_interrupt(__VA_ARGS__); \
+    } while(0)
 
 /**
  * @brief Get interrupt status value

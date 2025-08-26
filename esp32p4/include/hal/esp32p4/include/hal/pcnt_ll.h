@@ -29,7 +29,7 @@ extern "C" {
 #define PCNT_LL_GET_HW(num)      (((num) == 0) ? (&PCNT) : NULL)
 #define PCNT_LL_MAX_GLITCH_WIDTH 1023
 #define PCNT_LL_MAX_LIM          SHRT_MAX
-#define PCNT_LL_MIN_LIN          SHRT_MIN
+#define PCNT_LL_MIN_LIM          SHRT_MIN
 
 typedef enum {
     PCNT_LL_WATCH_EVENT_INVALID = -1,
@@ -159,10 +159,12 @@ static inline void pcnt_ll_enable_step_notify(pcnt_dev_t *hw, uint32_t unit, boo
  *
  * @param hw Peripheral PCNT hardware instance address.
  * @param unit PCNT unit number
+ * @param direction PCNT step direction
  * @param value PCNT step value
  */
-static inline void pcnt_ll_set_step_value(pcnt_dev_t *hw, uint32_t unit, int value)
+static inline void pcnt_ll_set_step_value(pcnt_dev_t *hw, uint32_t unit, pcnt_step_direction_t direction, int value)
 {
+    (void)direction;
     HAL_FORCE_MODIFY_U32_REG_FIELD(hw->change_conf_unit[3 - unit], cnt_step, value);
 }
 
@@ -376,6 +378,7 @@ static inline int pcnt_ll_get_low_limit_value(pcnt_dev_t *hw, uint32_t unit)
  * @param thres Threshold ID
  * @return PCNT threshold value
  */
+__attribute__((always_inline))
 static inline int pcnt_ll_get_thres_value(pcnt_dev_t *hw, uint32_t unit, uint32_t thres)
 {
     int16_t value;

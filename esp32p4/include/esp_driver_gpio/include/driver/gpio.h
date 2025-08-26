@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2015-2024 Espressif Systems (Shanghai) CO LTD
+ * SPDX-FileCopyrightText: 2015-2025 Espressif Systems (Shanghai) CO LTD
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -61,6 +61,8 @@ typedef struct {
  *
  * @param  pGPIOConfig Pointer to GPIO configure struct
  *
+ * @note This function always overwrite all the current IO configurations
+ *
  * @return
  *     - ESP_OK success
  *     - ESP_ERR_INVALID_ARG Parameter error
@@ -69,15 +71,13 @@ typedef struct {
 esp_err_t gpio_config(const gpio_config_t *pGPIOConfig);
 
 /**
- * @brief Reset an gpio to default state (select gpio function, enable pullup and disable input and output).
+ * @brief Reset a GPIO to a certain state (select gpio function, enable pullup and disable input and output).
  *
  * @param gpio_num GPIO number.
  *
- * @note This function also configures the IOMUX for this pin to the GPIO
- *       function, and disconnects any other peripheral output configured via GPIO
- *       Matrix.
- *
- * @return Always return ESP_OK.
+ * @return
+ *     - ESP_OK  Success
+ *     - ESP_ERR_INVALID_ARG Parameter error
  */
 esp_err_t gpio_reset_pin(gpio_num_t gpio_num);
 
@@ -157,10 +157,12 @@ int gpio_get_level(gpio_num_t gpio_num);
 /**
  * @brief    GPIO set direction
  *
- * Configure GPIO direction,such as output_only,input_only,output_and_input
+ * Configure GPIO mode,such as output_only,input_only,output_and_input
  *
  * @param  gpio_num  Configure GPIO pins number, it should be GPIO number. If you want to set direction of e.g. GPIO16, gpio_num should be GPIO_NUM_16 (16);
  * @param  mode GPIO direction
+ *
+ * @note This function always overwrite all the current modes that have applied on the IO pin
  *
  * @return
  *     - ESP_OK Success
@@ -170,8 +172,20 @@ int gpio_get_level(gpio_num_t gpio_num);
 esp_err_t gpio_set_direction(gpio_num_t gpio_num, gpio_mode_t mode);
 
 /**
- * @brief  Configure GPIO pull-up/pull-down resistors
+ * @brief Enable input for an IO
  *
+ * @param gpio_num GPIO number
+ *
+ * @return
+ *      - ESP_OK Success
+ *      - ESP_ERR_INVALID_ARG GPIO number error
+ */
+esp_err_t gpio_input_enable(gpio_num_t gpio_num);
+
+/**
+ * @brief  Configure GPIO internal pull-up/pull-down resistors
+ *
+ * @note This function always overwrite the current pull-up/pull-down configurations
  * @note ESP32: Only pins that support both input & output have integrated pull-up and pull-down resistors. Input-only GPIOs 34-39 do not.
  *
  * @param  gpio_num GPIO number. If you want to set pull up or down mode for e.g. GPIO16, gpio_num should be GPIO_NUM_16 (16);
@@ -420,8 +434,13 @@ esp_err_t gpio_hold_dis(gpio_num_t gpio_num);
   * Enabling this feature makes all digital gpio pads be at the holding state during Deep-sleep. The state of each pad
   * holds is its active configuration (not pad's sleep configuration!).
   *
-  * Note that this pad hold feature only works when the chip is in Deep-sleep mode. When the chip is in active mode,
-  * the digital gpio state can be changed freely even you have called this function.
+  * Note:
+  *   1. For digital IO, this API takes effect only if the corresponding digital IO pad hold function has been enabled. You
+  *      can enable the GPIO pad hold function by calling `gpio_hold_en`.
+  *      has been enabled. You can call `gpio_hold_en` to enable the gpio pad hold function.
+  *   2. Though this API targets all digital IOs, the pad hold feature only works when the chip is in Deep-sleep mode. When
+  *      the chip is in active mode, the digital GPIO state can be changed freely even if you have called this function, except
+  *      for IOs that are already held by `gpio_hold_en`.
   *
   * After this API is being called, the digital gpio Deep-sleep hold feature will work during every sleep process. You
   * should call `gpio_deep_sleep_hold_dis` to disable this feature.
@@ -439,7 +458,7 @@ void gpio_deep_sleep_hold_dis(void);
   * @param gpio_num GPIO number of the pad.
   * @param signal_idx Peripheral signal id to input. One of the ``*_IN_IDX`` signals in ``soc/gpio_sig_map.h``.
   */
-void gpio_iomux_in(uint32_t gpio_num, uint32_t signal_idx);
+void gpio_iomux_in(uint32_t gpio_num, uint32_t signal_idx) __attribute__((deprecated("Please use `gpio_iomux_input` instead")));
 
 /**
   * @brief Set peripheral output to an GPIO pad through the IOMUX.
@@ -448,7 +467,7 @@ void gpio_iomux_in(uint32_t gpio_num, uint32_t signal_idx);
   *        One of the ``FUNC_X_*`` of specified pin (X) in ``soc/io_mux_reg.h``.
   * @param out_en_inv True if the output enable needs to be inverted, otherwise False.
   */
-void gpio_iomux_out(uint8_t gpio_num, int func, bool out_en_inv);
+void gpio_iomux_out(uint8_t gpio_num, int func, bool out_en_inv) __attribute__((deprecated("Please use `gpio_iomux_output` instead")));
 
 #if SOC_GPIO_SUPPORT_FORCE_HOLD
 /**
@@ -568,6 +587,18 @@ esp_err_t gpio_deep_sleep_wakeup_disable(gpio_num_t gpio_num);
  *    - ESP_ERR_INVALID_ARG Parameter error
  */
 esp_err_t gpio_dump_io_configuration(FILE *out_stream, uint64_t io_bit_mask);
+
+/**
+ * @brief Get the configuration for an IO
+ *
+ * @param gpio_num GPIO number
+ * @param[out] out_io_config Pointer to the structure that saves the specific IO configuration
+ *
+ * @return
+ *    - ESP_OK Success
+ *    - ESP_ERR_INVALID_ARG Parameter error
+ */
+esp_err_t gpio_get_io_config(gpio_num_t gpio_num, gpio_io_config_t *out_io_config);
 
 #ifdef __cplusplus
 }

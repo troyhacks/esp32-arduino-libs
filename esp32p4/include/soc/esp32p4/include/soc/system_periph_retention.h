@@ -46,16 +46,6 @@ extern const regdma_entries_config_t cache_regs_retention[CACHE_RETENTION_LINK_L
 extern const regdma_entries_config_t hp_system_regs_retention[HP_SYSTEM_RETENTION_LINK_LEN];
 
 /**
- * @brief Provide access to timer group configuration registers retention
- * context definition.
- *
- * This is an internal function of the sleep retention driver, and is not
- * useful for external use.
- */
-#define TIMG_RETENTION_LINK_LEN     8
-extern const regdma_entries_config_t tg_regs_retention[TIMG_RETENTION_LINK_LEN];
-
-/**
  * @brief Provide access to IOMUX configuration registers retention
  * context definition.
  *
@@ -104,6 +94,16 @@ extern const regdma_entries_config_t systimer_regs_retention[SYSTIMER_RETENTION_
  */
 #define PAU_RETENTION_LINK_LEN 1
 extern const regdma_entries_config_t pau_regs_retention[PAU_RETENTION_LINK_LEN];
+
+/**
+ * @brief Provide access to pvt configuration registers retention
+ * context definition.
+ *
+ * This is an internal function of the sleep retention driver, and is not
+ * useful for external use.
+ */
+#define PVT_RETENTION_LINK_LEN   1
+extern const regdma_entries_config_t pvt_regs_retention[PVT_RETENTION_LINK_LEN];
 
 #ifdef __cplusplus
 }

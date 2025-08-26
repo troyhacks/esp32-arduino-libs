@@ -13,6 +13,7 @@
 #include "soc/clk_tree_defs.h"
 #include "soc/hp_sys_clkrst_reg.h"
 #include "soc/hp_sys_clkrst_struct.h"
+#include "soc/lp_clkrst_reg.h"
 #include "soc/lp_clkrst_struct.h"
 #include "soc/pmu_reg.h"
 #include "hal/regi2c_ctrl.h"
@@ -38,6 +39,7 @@ extern "C" {
 #define CLK_LL_PLL_80M_FREQ_MHZ    (80)
 #define CLK_LL_PLL_160M_FREQ_MHZ   (160)
 #define CLK_LL_PLL_240M_FREQ_MHZ   (240)
+#define CLK_LL_PLL_SDIO_FREQ_MHZ   (200)
 
 #define CLK_LL_PLL_360M_FREQ_MHZ   (360)
 #define CLK_LL_PLL_400M_FREQ_MHZ   (400)
@@ -113,6 +115,7 @@ static inline __attribute__((always_inline)) void clk_ll_cpll_disable(void)
  */
 static inline __attribute__((always_inline)) void clk_ll_apll_enable(void)
 {
+    SET_PERI_REG_MASK(LP_CLKRST_HP_CLK_CTRL_REG, LP_CLKRST_HP_AUDIO_PLL_CLK_EN);
     SET_PERI_REG_MASK(PMU_IMM_HP_CK_POWER_REG, PMU_TIE_HIGH_XPD_APLL | PMU_TIE_HIGH_XPD_APLL_I2C);
     SET_PERI_REG_MASK(PMU_IMM_HP_CK_POWER_REG, PMU_TIE_HIGH_GLOBAL_APLL_ICG);
 }
@@ -122,6 +125,7 @@ static inline __attribute__((always_inline)) void clk_ll_apll_enable(void)
  */
 static inline __attribute__((always_inline)) void clk_ll_apll_disable(void)
 {
+    CLEAR_PERI_REG_MASK(LP_CLKRST_HP_CLK_CTRL_REG, LP_CLKRST_HP_AUDIO_PLL_CLK_EN);
     SET_PERI_REG_MASK(PMU_IMM_HP_CK_POWER_REG, PMU_TIE_LOW_GLOBAL_APLL_ICG) ;
     SET_PERI_REG_MASK(PMU_IMM_HP_CK_POWER_REG, PMU_TIE_LOW_XPD_APLL | PMU_TIE_LOW_XPD_APLL_I2C);
 }
@@ -150,6 +154,7 @@ static inline __attribute__((always_inline)) void clk_ll_lp_pll_disable(void)
 static inline __attribute__((always_inline)) void clk_ll_mpll_enable(void)
 {
     REG_SET_BIT(PMU_RF_PWC_REG, PMU_MSPI_PHY_XPD);
+    REG_SET_BIT(LP_CLKRST_HP_CLK_CTRL_REG, LP_CLKRST_HP_MPLL_500M_CLK_EN);
 }
 
 /**
@@ -342,7 +347,7 @@ static inline __attribute__((always_inline)) uint32_t clk_ll_cpll_get_freq_mhz(u
     unsigned chip_version = efuse_hal_chip_revision();
     if (!ESP_CHIP_REV_ABOVE(chip_version, 1)) {
         return xtal_freq_mhz * (div + 4) / (ref_div + 1);
-    } else
+    }
     return xtal_freq_mhz * div / (ref_div + 1);
 }
 
@@ -870,7 +875,7 @@ static inline __attribute__((always_inline)) void clk_ll_rc_fast_set_divider(uin
 /**
  * @brief Get RC_FAST_CLK divider
  *
- * @return Divider. Divider = (CK8M_DIV_SEL + 1).
+ * @return Divider
  */
 static inline __attribute__((always_inline)) uint32_t clk_ll_rc_fast_get_divider(void)
 {

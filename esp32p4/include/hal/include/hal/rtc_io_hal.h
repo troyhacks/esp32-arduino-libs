@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2015-2025 Espressif Systems (Shanghai) CO LTD
+ * SPDX-FileCopyrightText: 2015-2024 Espressif Systems (Shanghai) CO LTD
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -15,7 +15,6 @@
 #pragma once
 
 #include <esp_err.h>
-#include "sdkconfig.h"
 
 #include "soc/soc_caps.h"
 #if SOC_RTCIO_PIN_COUNT > 0
@@ -36,7 +35,7 @@ extern "C" {
 /**
  * Enable rtcio module clock.
  */
-#define rtcio_hal_enable_io_clock(enable) rtcio_ll_output_enable(enable)
+#define rtcio_hal_enable_io_clock(enable) rtcio_ll_enable_io_clock(enable)
 #endif
 
 /**

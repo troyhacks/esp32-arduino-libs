@@ -141,6 +141,15 @@ typedef enum {
 /*---------------------------------------------------------------
                       Color Endian
 ---------------------------------------------------------------*/
+/**
+ * @brief RAW element order
+ */
+typedef enum {
+    COLOR_RAW_ELEMENT_ORDER_BGGR,    ///< BGGR order
+    COLOR_RAW_ELEMENT_ORDER_GBRG,    ///< GBRG order
+    COLOR_RAW_ELEMENT_ORDER_GRBG,    ///< GRBG order
+    COLOR_RAW_ELEMENT_ORDER_RGGB,    ///< RGGB order
+} color_raw_element_order_t;
 
 /**
  * @brief RGB element order
@@ -188,6 +197,19 @@ typedef union {
     uint16_t val;           /*!< 16-bit RGB565 value */
 } color_pixel_rgb565_data_t;
 
+/*---------------------------------------------------------------
+                        Color Components
+---------------------------------------------------------------*/
+
+/**
+ * @brief Color component
+ */
+typedef enum {
+    COLOR_COMPONENT_R,          /*!< R component */
+    COLOR_COMPONENT_G,          /*!< G component */
+    COLOR_COMPONENT_B,          /*!< B component */
+    COLOR_COMPONENT_INVALID,    /*!< Invalid color component */
+} color_component_t;
 
 /**
  * @brief The order of the components per pack in the YUV422 format

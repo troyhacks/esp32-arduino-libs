@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
+ * SPDX-FileCopyrightText: 2023-2025 Espressif Systems (Shanghai) CO LTD
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -15,6 +15,7 @@
 #include "soc/lpperi_struct.h"
 #include "soc/pmu_struct.h"
 #include "soc/lp_system_struct.h"
+#include "soc/soc_etm_struct.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -27,7 +28,7 @@ extern "C" {
 #define LP_CORE_LL_WAKEUP_SOURCE_LP_BOD     BIT(14)
 #define LP_CORE_LL_WAKEUP_SOURCE_ETM        BIT(17)
 #define LP_CORE_LL_WAKEUP_SOURCE_LP_TIMER_1 BIT(18)
-#define LP_CORE_LL_WAKEUP_SOURCE_LP_I2S     BIT(19)
+#define LP_CORE_LL_WAKEUP_SOURCE_LP_VAD     BIT(19)
 #define LP_CORE_LL_WAKEUP_SOURCE_HP_CPU     BIT(22)
 
 /* Use lp timer 1 as the normal wakeup timer, timer 0 is used by deep sleep */
@@ -155,6 +156,32 @@ static inline void lp_core_ll_request_sleep(void)
 static inline void lp_core_ll_clear_etm_wakeup_status(void)
 {
     LP_SYS.sys_ctrl.lp_core_etm_wakeup_flag_clr = 1;
+}
+
+/**
+ * @brief Enable wakeup from LP UART.
+ */
+static inline void lp_core_ll_enable_lp_uart_wakeup(bool enable)
+{
+    LPPERI.mem_ctrl.lp_uart_wakeup_en = enable;
+}
+
+/**
+ * @brief Get the flag that marks whether LP CPU is awakened by ETM
+ *
+ * @return Return true if lpcore is woken up by soc etm flag
+ */
+static inline bool lp_core_ll_get_etm_wakeup_flag(void)
+{
+    return SOC_ETM.task_st5.ulp_task_wakeup_cpu_st;
+}
+
+/**
+ * @brief Clear the flag that marks whether LP CPU is awakened by ETM
+ */
+static inline void lp_core_ll_clear_etm_wakeup_flag(void)
+{
+    SOC_ETM.task_st5_clr.ulp_task_wakeup_cpu_st_clr = 1;
 }
 
 #ifdef __cplusplus

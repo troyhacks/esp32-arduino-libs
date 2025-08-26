@@ -48,9 +48,9 @@ typedef struct {
 #endif
     };
     struct {
-        uint32_t backup_before_sleep: 1;    /*!< If set, the driver will backup/restore the HP UART registers before entering/after exiting sleep mode.
-                                                 By this approach, the system can power off HP UART's power domain.
-                                                 This can save power, but at the expense of more RAM being consumed */
+        uint32_t allow_pd: 1;               /*!< If set, driver allows the power domain to be powered off when system enters sleep mode.
+                                                 This can save power, but at the expense of more RAM being consumed to save register context. */
+        uint32_t backup_before_sleep: 1;    /*!< @deprecated, same meaning as allow_pd */
     } flags;                                /*!< Configuration flags */
 } uart_config_t;
 
@@ -68,18 +68,20 @@ typedef struct {
  * @brief UART event types used in the ring buffer
  */
 typedef enum {
-    UART_DATA,              /*!< UART data event*/
-    UART_BREAK,             /*!< UART break event*/
-    UART_BUFFER_FULL,       /*!< UART RX buffer full event*/
-    UART_FIFO_OVF,          /*!< UART FIFO overflow event*/
-    UART_FRAME_ERR,         /*!< UART RX frame error event*/
-    UART_PARITY_ERR,        /*!< UART RX parity event*/
-    UART_DATA_BREAK,        /*!< UART TX data and break event*/
-    UART_PATTERN_DET,       /*!< UART pattern detected */
+    UART_DATA,              /*!< Triggered when the receiver either takes longer than rx_timeout_thresh
+                                 to receive a byte, or when more data is received than what rxfifo_full_thresh
+                                 specifies*/
+    UART_BREAK,             /*!< Triggered when the receiver detects a NULL character*/
+    UART_BUFFER_FULL,       /*!< Triggered when RX ring buffer is full*/
+    UART_FIFO_OVF,          /*!< Triggered when the received data exceeds the capacity of the RX FIFO*/
+    UART_FRAME_ERR,         /*!< Triggered when the receiver detects a data frame error*/
+    UART_PARITY_ERR,        /*!< Triggered when a parity error is detected in the received data*/
+    UART_DATA_BREAK,        /*!< Internal event triggered to signal a break afte data transmission*/
+    UART_PATTERN_DET,       /*!< Triggered when a specified pattern  is detected in the incoming data*/
 #if SOC_UART_SUPPORT_WAKEUP_INT
-    UART_WAKEUP,            /*!< UART wakeup event */
+    UART_WAKEUP,            /*!< Triggered when a wakeup signal is detected*/
 #endif
-    UART_EVENT_MAX,         /*!< UART event max index*/
+    UART_EVENT_MAX,         /*!< Maximum index for UART events*/
 } uart_event_type_t;
 
 /**
@@ -862,6 +864,68 @@ esp_err_t uart_set_loop_back(uart_port_t uart_num, bool loop_back_en);
   *
   */
 void uart_set_always_rx_timeout(uart_port_t uart_num, bool always_rx_timeout_en);
+
+/**************************** AUTO BAUD RATE DETECTION *****************************/
+/**
+ * @brief UART bitrate detection configuration parameters for `uart_detect_bitrate_start` function to acquire a new uart handle
+ */
+typedef struct {
+    int rx_io_num;                      /*!< GPIO pin number for the incoming signal */
+    uart_sclk_t source_clk;             /*!< The higher the frequency of the clock source, the more accurate the detected bitrate value;
+                                             The slower the frequency of the clock source, the slower the bitrate can be measured */
+} uart_bitrate_detect_config_t;
+
+/**
+ * @brief Structure to store the measurement results for UART bitrate detection within the measurement period
+ *
+ * Formula to calculate the bitrate:
+ * If the signal is ideal,
+ *      bitrate = clk_freq_hz * 2 / (low_period + high_period)
+ * If the signal is weak along falling edges, then you may use
+ *      bitrate = clk_freq_hz * 2 / pos_period
+ * If the signal is weak along rising edges, then you may use
+ *      bitrate = clk_freq_hz * 2 / neg_period
+ */
+typedef struct {
+    uint32_t low_period;                /*!< Stores the minimum tick count of a low-level pulse */
+    uint32_t high_period;               /*!< Stores the minimum tick count of a high-level pulse */
+    uint32_t pos_period;                /*!< Stores the minimum tick count between two positive edges */
+    uint32_t neg_period;                /*!< Stores the minimum tick count between two negative edges */
+    uint32_t edge_cnt;                  /*!< Stores the count of RX edge changes (10-bit counter, be careful, it could overflow) */
+    uint32_t clk_freq_hz;               /*!< The frequency of the tick being used to count the measurement results, in Hz */
+} uart_bitrate_res_t;
+
+/**
+ * @brief Start to do a bitrate detection for an incoming data signal (auto baud rate detection)
+ *
+ * This function can act as a standalone API. No need to install UART driver before calling this function.
+ *
+ * It is recommended that the incoming data line contains alternating bit sequence, data bytes such as `0x55` or `0xAA`. Characters `NULL', `0xCC` are not good for the measurement.
+ *
+ * @param uart_num The ID of the UART port to be used to do the measurement. Note that only HP UART ports have the capability.
+ * @param config Pointer to the configuration structure for the UART port. If the port has already been acquired, this parameter is ignored.
+ *
+ * @return
+ *      - ESP_OK on success
+ *      - ESP_ERR_INVALID_ARG Parameter error
+ *      - ESP_FAIL No free uart port or source_clk invalid
+ */
+esp_err_t uart_detect_bitrate_start(uart_port_t uart_num, const uart_bitrate_detect_config_t *config);
+
+/**
+ * @brief Stop the bitrate detection
+ *
+ * The measurement period should last for at least one-byte long if detecting UART baud rate, then call this function to stop and get the measurement result.
+ *
+ * @param uart_num The ID of the UART port
+ * @param deinit Whether to release the UART port after finishing the measurement
+ * @param[out] ret_res Structure to store the measurement results
+ * @return
+ *      - ESP_OK on success
+ *      - ESP_ERR_INVALID_ARG Parameter error
+ *      - ESP_FAIL Unknown tick frequency
+ */
+esp_err_t uart_detect_bitrate_stop(uart_port_t uart_num, bool deinit, uart_bitrate_res_t *ret_res);
 
 #ifdef __cplusplus
 }
