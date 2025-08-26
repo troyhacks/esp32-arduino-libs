@@ -1,5 +1,5 @@
 lib-builder: release/v5.3 76233ce
-esp-idf: c09aadf60c
+esp-idf: 6fd5a3d3db
 arduino: release/v3.1.x 639ef0870
 tinyusb: master 5fb3c0996
 espressif__eppp_link: 0.2.0

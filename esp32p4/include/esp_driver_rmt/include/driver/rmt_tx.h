@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2022-2023 Espressif Systems (Shanghai) CO LTD
+ * SPDX-FileCopyrightText: 2022-2025 Espressif Systems (Shanghai) CO LTD
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -44,6 +44,7 @@ typedef struct {
         uint32_t with_dma: 1;     /*!< If set, the driver will allocate an RMT channel with DMA capability */
         uint32_t io_loop_back: 1; /*!< The signal output from the GPIO will be fed to the input path as well */
         uint32_t io_od_mode: 1;   /*!< Configure the GPIO as open-drain mode */
+        uint32_t init_level: 1;    /*!< Set the initial level of the RMT channel signal */
     } flags;                      /*!< TX channel config flags */
 } rmt_tx_channel_config_t;
 
@@ -178,6 +179,20 @@ esp_err_t rmt_del_sync_manager(rmt_sync_manager_handle_t synchro);
  *      - ESP_FAIL: Reset the synchronization manager failed because of other error
  */
 esp_err_t rmt_sync_reset(rmt_sync_manager_handle_t synchro);
+
+/**
+ * @brief Switch GPIO for RMT TX channel
+ *
+ * @param[in] channel RMT TX channel handle
+ * @param[in] gpio_num New GPIO number to be used
+ * @param[in] invert_out Whether to invert the output signal
+ * @return
+ *      - ESP_OK: Switch GPIO successfully
+ *      - ESP_ERR_INVALID_ARG: Switch GPIO failed because of invalid argument
+ *      - ESP_ERR_INVALID_STATE: Switch GPIO failed because channel is not disabled
+ *      - ESP_FAIL: Switch GPIO failed because of other error
+ */
+esp_err_t rmt_tx_switch_gpio(rmt_channel_handle_t channel, gpio_num_t gpio_num, bool invert_out);
 
 #ifdef __cplusplus
 }

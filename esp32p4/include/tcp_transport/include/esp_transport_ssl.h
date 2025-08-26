@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2015-2023 Espressif Systems (Shanghai) CO LTD
+ * SPDX-FileCopyrightText: 2015-2025 Espressif Systems (Shanghai) CO LTD
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -45,7 +45,7 @@ void esp_transport_ssl_set_cert_data(esp_transport_handle_t t, const char *data,
 void esp_transport_ssl_set_cert_data_der(esp_transport_handle_t t, const char *data, int len);
 
 /**
- * @brief      Enable the use of certification bundle for server verfication for
+ * @brief      Enable the use of certification bundle for server verification for
  *             an SSL connection.
  *             It must be first enabled in menuconfig.
  *
@@ -61,6 +61,15 @@ void esp_transport_ssl_crt_bundle_attach(esp_transport_handle_t t, esp_err_t ((*
  */
 void esp_transport_ssl_enable_global_ca_store(esp_transport_handle_t t);
 
+#if CONFIG_MBEDTLS_DYNAMIC_BUFFER
+/**
+ * @brief      Set ESP-TLS dynamic buffer strategy for ESP-TLS connection
+ *
+ * @param      t    ssl transport
+ * @param[in]  strategy      ESP-TLS dynamic buffer strategy
+ */
+void esp_transport_ssl_set_esp_tls_dyn_buf_strategy(esp_transport_handle_t t, esp_tls_dyn_buf_strategy_t strategy);
+#endif
 /**
  * @brief      Set TLS protocol version for ESP-TLS connection
  *
@@ -210,6 +219,14 @@ void esp_transport_ssl_set_keep_alive(esp_transport_handle_t t, esp_transport_ke
  * @param[in]  if_name  The interface name
  */
 void esp_transport_ssl_set_interface_name(esp_transport_handle_t t, struct ifreq *if_name);
+
+/**
+ * @brief      Set addr family of transport
+ *
+ * @param[in]  t            The transport handle
+ * @param[in]  addr_family  The addr family
+ */
+void esp_transport_ssl_set_addr_family(esp_transport_handle_t t, esp_tls_addr_family_t addr_family);
 
 #ifdef CONFIG_ESP_TLS_CLIENT_SESSION_TICKETS
 /**

@@ -1115,6 +1115,24 @@
 #endif
 
 /**
+ * \def MBEDTLS_SSL_KEYING_MATERIAL_EXPORT
+ *
+ * When this option is enabled, the client and server can extract additional
+ * shared symmetric keys after an SSL handshake using the function
+ * mbedtls_ssl_export_keying_material().
+ *
+ * The process for deriving the keys is specified in RFC 5705 for TLS 1.2 and
+ * in RFC 8446, Section 7.5, for TLS 1.3.
+ *
+ * Comment this macro to disable mbedtls_ssl_export_keying_material().
+ */
+#ifdef CONFIG_MBEDTLS_SSL_KEYING_MATERIAL_EXPORT
+#define MBEDTLS_SSL_KEYING_MATERIAL_EXPORT
+#else
+#undef MBEDTLS_SSL_KEYING_MATERIAL_EXPORT
+#endif
+
+/**
  * \def MBEDTLS_SSL_CBC_RECORD_SPLITTING
  *
  * Enable 1/n-1 record splitting for CBC mode in SSLv3 and TLS 1.0.
@@ -2089,6 +2107,21 @@
 #endif
 
 /**
+ * \def MBEDTLS_SSL_CLI_ALLOW_WEAK_CERTIFICATE_VERIFICATION_WITHOUT_HOSTNAME
+ *
+ * Caller: library/ssl_tls.c
+ *
+ * Allow weak certificate verification without a hostname.
+ * This option is not recommended for production use.
+ */
+
+#if CONFIG_MBEDTLS_ALLOW_WEAK_CERTIFICATE_VERIFICATION
+#define MBEDTLS_SSL_CLI_ALLOW_WEAK_CERTIFICATE_VERIFICATION_WITHOUT_HOSTNAME
+#else
+#undef MBEDTLS_SSL_CLI_ALLOW_WEAK_CERTIFICATE_VERIFICATION_WITHOUT_HOSTNAME
+#endif
+
+/**
  * \def MBEDTLS_GCM_C
  *
  * Enable the Galois/Counter Mode (GCM).
@@ -2475,8 +2508,11 @@
  *            on it, and considering stronger message digests instead.
  *
  */
+#if CONFIG_MBEDTLS_SHA1_C
 #define MBEDTLS_SHA1_C
-
+#else
+#undef MBEDTLS_SHA1_C
+#endif
 /**
  * \def MBEDTLS_SHA224_C
  *
