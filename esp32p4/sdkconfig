@@ -893,14 +893,6 @@ CONFIG_TINYUSB_DEBUG_LEVEL=0
 # end of Arduino TinyUSB
 
 #
-# ESP-NN
-#
-# CONFIG_NN_ANSI_C is not set
-CONFIG_NN_OPTIMIZED=y
-CONFIG_NN_OPTIMIZATIONS=1
-# end of ESP-NN
-
-#
 # Compiler options
 #
 # CONFIG_COMPILER_OPTIMIZATION_DEBUG is not set
