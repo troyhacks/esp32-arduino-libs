@@ -919,27 +919,6 @@ SECTIONS
      */
     _rodata_reserved_end = ADDR(.flash.tbss);
   } > rodata_seg_low
-  /* This section holds .ext_ram.bss data, and will be put in PSRAM */
-  .ext_ram.bss (NOLOAD) :
-  {
-    _ext_ram_bss_start = ABSOLUTE(.);
-    *(.ext_ram.bss .ext_ram.bss.*)
-    
- . = ALIGN(4); 
- _ext_ram_bss_end = ABSOLUTE(.);
-  } > ext_ram_seg
-  /**
-   * This section holds data that won't be initialised when startup.
-   * This section locates in External RAM region.
-   */
-  .ext_ram_noinit (NOLOAD) :
-  {
-    _ext_ram_noinit_start = ABSOLUTE(.);
-    *(.ext_ram_noinit*)
-    
- . = ALIGN(4); 
- _ext_ram_noinit_end = ABSOLUTE(.);
-  } > ext_ram_seg
   .dram0.bss (NOLOAD) :
   {
     
@@ -951,6 +930,7 @@ SECTIONS
      */
     *(.bss .bss.*)
     *(.dynbss .dynsbss .gnu.linkonce.b .gnu.linkonce.b.* .gnu.linkonce.sb .gnu.linkonce.sb.* .gnu.linkonce.sb2 .gnu.linkonce.sb2.* .sbss .sbss.* .sbss2 .sbss2.* .scommon .share.mem)
+    *(.ext_ram.bss .ext_ram.bss.*)
     *(COMMON)
     
  . = ALIGN(4); 
@@ -967,6 +947,7 @@ SECTIONS
      */
     *(.bss .bss.*)
     *(.dynbss .dynsbss .gnu.linkonce.b .gnu.linkonce.b.* .gnu.linkonce.sb .gnu.linkonce.sb.* .gnu.linkonce.sb2 .gnu.linkonce.sb2.* .sbss .sbss.* .sbss2 .sbss2.* .scommon .share.mem)
+    *(.ext_ram.bss .ext_ram.bss.*)
     *(COMMON)
     
  . = ALIGN(4); 
