@@ -404,7 +404,7 @@ env.Append(
         "ESP32_ARDUINO_LIB_BUILDER",
         ("ESP_MDNS_VERSION_NUMBER", '\\"1.8.2\\"'),
         "ESP_PLATFORM",
-        ("IDF_VER", '\\"v5.5-468-g02c5f2dbb9\\"'),
+        ("IDF_VER", '\\"v5.5-468-g02c5f2dbb9-dirty\\"'),
         ("MBEDTLS_CONFIG_FILE", '\\"mbedtls/esp_config.h\\"'),
         ("SOC_MMU_PAGE_SIZE", 'CONFIG_MMU_PAGE_SIZE'),
         ("SOC_XTAL_FREQ_MHZ", 'CONFIG_XTAL_FREQ'),
