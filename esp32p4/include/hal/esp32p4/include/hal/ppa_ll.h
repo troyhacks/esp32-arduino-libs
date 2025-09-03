@@ -245,6 +245,7 @@ static inline void ppa_ll_srm_set_rx_yuv2rgb_std(ppa_dev_t *dev, ppa_color_conv_
         break;
     default:
         // Unsupported RGB-YUV conversion standard
+        ESP_LOGE("ppa_ll_srm", "Unsupported YUV-to-RGB conversion standard: %d", (int)std);
         abort();
     }
 }
