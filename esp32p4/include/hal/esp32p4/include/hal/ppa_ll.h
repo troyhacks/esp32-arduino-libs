@@ -287,6 +287,7 @@ static inline void ppa_ll_srm_set_rx_yuv_range(ppa_dev_t *dev, ppa_color_range_t
         break;
     default:
         // Unsupported color range
+	ESP_LOGE("ppa_ll_srm", "Unsupported color range: %d", (int)range);
         abort();
     }
 }
