@@ -370,6 +370,7 @@ static inline void ppa_ll_srm_configure_rx_alpha(ppa_dev_t *dev, ppa_alpha_updat
         break;
     default:
         // Unsupported alpha update mode
+        ESP_LOGE("ppa_ll_srm", "Unsupported alpha update mode: %d, value: %lu", (int)mode, val);
         abort();
     }
 }
