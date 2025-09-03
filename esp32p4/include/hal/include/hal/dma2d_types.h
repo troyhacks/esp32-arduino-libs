@@ -80,7 +80,7 @@ typedef dma2d_descriptor_align8_t dma2d_descriptor_t;
 static inline uint32_t dma2d_desc_pixel_format_to_pbyte_value(color_space_pixel_format_t pixel_format)
 {
     uint32_t bit_depth = color_hal_pixel_format_get_bit_depth(pixel_format);
-    ESP_LOGI("DMA2D_DEBUG", "Input color_type_id: %lu ----> Calculated bit_depth: %lu", (unsigned long)pixel_format.color_type_id, (unsigned long)bit_depth);
+    ESP_LOGE("DMA2D_DEBUG", "Input color_type_id: %lu ----> Calculated bit_depth: %lu", (unsigned long)pixel_format.color_type_id, (unsigned long)bit_depth);
     switch (color_hal_pixel_format_get_bit_depth(pixel_format)) {
     case 4:
         return DMA2D_DESCRIPTOR_PBYTE_0B5_PER_PIXEL;
