@@ -1,7 +1,7 @@
 lib-builder: master 3aa1668
 esp-idf: 129cd0d247
 arduino: master 561136870
-tinyusb: master 61761b943
+tinyusb: master 047b85674
 chmorgan__esp-libhelix-mp3: 1.0.3
 espressif__dl_fft: 0.3.1
 espressif__eppp_link: 1.0.1
