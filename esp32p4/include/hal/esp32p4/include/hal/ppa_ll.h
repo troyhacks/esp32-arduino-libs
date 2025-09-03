@@ -193,6 +193,7 @@ static inline void ppa_ll_srm_set_rx_color_mode(ppa_dev_t *dev, ppa_srm_color_mo
         break;
     default:
         // Unsupported SRM rx color mode
+        ESP_LOGE("ppa_ll", "Unsupported SRM rx color mode: 0x%lX", (uint32_t)color_mode);
         abort();
     }
     dev->sr_color_mode.sr_rx_cm = val;
