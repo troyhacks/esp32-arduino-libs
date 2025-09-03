@@ -10,7 +10,7 @@
 #include "esp_assert.h"
 #include "hal/assert.h"
 #include "hal/color_hal.h"
-#include "esp_log.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -75,7 +75,6 @@ typedef dma2d_descriptor_align8_t dma2d_descriptor_t;
 #define DMA2D_DESCRIPTOR_PBYTE_3B0_PER_PIXEL (4)                  /*!< 2D-DMA descriptor pbyte value when 3 bytes/pixel */
 #define DMA2D_DESCRIPTOR_PBYTE_4B0_PER_PIXEL (5)                  /*!< 2D-DMA descriptor pbyte value when 4 bytes/pixel */
 
-/*
 // Helper function to convert pixel format to 2D-DMA descriptor pbyte value
 static inline uint32_t dma2d_desc_pixel_format_to_pbyte_value(color_space_pixel_format_t pixel_format)
 {
@@ -94,32 +93,6 @@ static inline uint32_t dma2d_desc_pixel_format_to_pbyte_value(color_space_pixel_
         return DMA2D_DESCRIPTOR_PBYTE_4B0_PER_PIXEL;
     default:
         // Unsupported bit depth
-        abort();
-    }
-}
-*/
-// Helper function to convert pixel format to 2D-DMA descriptor pbyte value
-static inline uint32_t dma2d_desc_pixel_format_to_pbyte_value(color_space_pixel_format_t pixel_format)
-{
-    // Store the bit depth in a variable to use for logging
-    uint32_t bit_depth = color_hal_pixel_format_get_bit_depth(pixel_format);
-
-    switch (bit_depth) {
-    case 4:
-        return DMA2D_DESCRIPTOR_PBYTE_0B5_PER_PIXEL;
-    case 8:
-        return DMA2D_DESCRIPTOR_PBYTE_1B0_PER_PIXEL;
-    case 12:
-        return DMA2D_DESCRIPTOR_PBYTE_1B5_PER_PIXEL;
-    case 16:
-        return DMA2D_DESCRIPTOR_PBYTE_2B0_PER_PIXEL;
-    case 24:
-        return DMA2D_DESCRIPTOR_PBYTE_3B0_PER_PIXEL;
-    case 32:
-        return DMA2D_DESCRIPTOR_PBYTE_4B0_PER_PIXEL;
-    default:
-        // Log the unsupported values before crashing
-        ESP_LOGE("DMA2D", "Unsupported bit depth (%d) for color_type_id (0x%lX)", bit_depth, pixel_format.color_type_id);
         abort();
     }
 }

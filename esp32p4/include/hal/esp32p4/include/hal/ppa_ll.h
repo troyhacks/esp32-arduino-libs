@@ -193,7 +193,6 @@ static inline void ppa_ll_srm_set_rx_color_mode(ppa_dev_t *dev, ppa_srm_color_mo
         break;
     default:
         // Unsupported SRM rx color mode
-        ESP_LOGE("ppa_ll", "Unsupported SRM rx color mode: 0x%lX", (uint32_t)color_mode);
         abort();
     }
     dev->sr_color_mode.sr_rx_cm = val;
@@ -245,7 +244,6 @@ static inline void ppa_ll_srm_set_rx_yuv2rgb_std(ppa_dev_t *dev, ppa_color_conv_
         break;
     default:
         // Unsupported RGB-YUV conversion standard
-        ESP_LOGE("ppa_ll_srm", "Unsupported YUV-to-RGB conversion standard: %d", (int)std);
         abort();
     }
 }
@@ -288,7 +286,6 @@ static inline void ppa_ll_srm_set_rx_yuv_range(ppa_dev_t *dev, ppa_color_range_t
         break;
     default:
         // Unsupported color range
-	ESP_LOGE("ppa_ll_srm", "Unsupported color range: %d", (int)range);
         abort();
     }
 }
@@ -370,7 +367,6 @@ static inline void ppa_ll_srm_configure_rx_alpha(ppa_dev_t *dev, ppa_alpha_updat
         break;
     default:
         // Unsupported alpha update mode
-        ESP_LOGE("ppa_ll_srm", "Unsupported alpha update mode: %d, value: %lu", (int)mode, val);
         abort();
     }
 }
