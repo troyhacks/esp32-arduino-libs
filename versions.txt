@@ -1,6 +1,6 @@
 lib-builder: master 33b2fa6
 esp-idf: 129cd0d247
-arduino: master 9a127fc75
+arduino: master 0dbaa3f0f
 tinyusb: master 89f8fbc9c
 espressif__eppp_link: 1.1.0
 espressif__esp-dsp: 1.7.0
