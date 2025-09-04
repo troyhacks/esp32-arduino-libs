@@ -4,6 +4,7 @@ arduino: master f9bc1776f
 tinyusb: master 89f8fbc9c
 espressif__eppp_link: 1.1.0
 espressif__esp-dsp: 1.7.0
+espressif__esp_h264: 1.1.3
 espressif__esp_hosted: 2.3.2
 espressif__esp_serial_slave_link: 1.1.0~1
 espressif__esp_wifi_remote: 0.13.0
