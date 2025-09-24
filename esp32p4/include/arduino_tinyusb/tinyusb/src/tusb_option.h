@@ -95,6 +95,7 @@
 #define OPT_MCU_STM32H7RS         317 ///< ST F7RS
 #define OPT_MCU_STM32C0           318 ///< ST C0
 #define OPT_MCU_STM32N6           319 ///< ST N6
+#define OPT_MCU_STM32WBA          320 ///< ST WBA
 
 // Sony
 #define OPT_MCU_CXD56             400 ///< SONY CXD56
@@ -130,6 +131,7 @@
 #define OPT_MCU_ESP32P4           907 ///< Espressif ESP32-P4
 #define OPT_MCU_ESP32C5           908 ///< Espressif ESP32-C5
 #define OPT_MCU_ESP32C61          909 ///< Espressif ESP32-C61
+#define OPT_MCU_ESP32H4           910 ///< Espressif ESP32-H4
 #define TUSB_MCU_VENDOR_ESPRESSIF (CFG_TUSB_MCU >= 900 && CFG_TUSB_MCU < 1000) // check if Espressif MCU
 #define TUP_MCU_ESPRESSIF        TUSB_MCU_VENDOR_ESPRESSIF //  for backward compatibility
 
