@@ -35,6 +35,7 @@
 // Macros Helper
 //--------------------------------------------------------------------+
 #define TU_ARRAY_SIZE(_arr)   ( sizeof(_arr) / sizeof(_arr[0]) )
+#define TU_FIELD_SIZE(_type, _field)  (sizeof(((_type *)0)->_field))
 #define TU_MIN(_x, _y)        ( ( (_x) < (_y) ) ? (_x) : (_y) )
 #define TU_MAX(_x, _y)        ( ( (_x) > (_y) ) ? (_x) : (_y) )
 #define TU_DIV_CEIL(n, d)     (((n) + (d) - 1) / (d))
@@ -89,14 +90,14 @@ extern uint32_t tusb_time_millis_api(void);
 extern void tusb_time_delay_ms_api(uint32_t ms);
 
 // flush data cache
-TU_ATTR_WEAK extern void tusb_app_dcache_flush(uintptr_t addr, uint32_t data_size);
+extern void tusb_app_dcache_flush(uintptr_t addr, uint32_t data_size);
 
 // invalidate data cache
-TU_ATTR_WEAK extern void tusb_app_dcache_invalidate(uintptr_t addr, uint32_t data_size);
+extern void tusb_app_dcache_invalidate(uintptr_t addr, uint32_t data_size);
 
 // Optional physical <-> virtual address translation
-TU_ATTR_WEAK extern void* tusb_app_virt_to_phys(void *virt_addr);
-TU_ATTR_WEAK extern void* tusb_app_phys_to_virt(void *phys_addr);
+extern void* tusb_app_virt_to_phys(void *virt_addr);
+extern void* tusb_app_phys_to_virt(void *phys_addr);
 
 //--------------------------------------------------------------------+
 // Internal Inline Functions
