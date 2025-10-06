@@ -5,9 +5,12 @@ tinyusb: master 7a96291bf
 chmorgan__esp-libhelix-mp3: 1.0.3
 espressif__eppp_link: 1.1.2
 espressif__esp-dsp: 1.6.0
+espressif__esp_codec_dev: 1.5.0
 espressif__esp_h264: 1.1.3
-espressif__esp_hosted: 2.5.3
+espressif__esp_hosted: 2.5.10
+espressif__esp_new_jpeg: 0.6.1
 espressif__esp_serial_slave_link: 1.1.1~1
+espressif__esp_video_codec: 0.5.3
 espressif__esp_wifi_remote: 0.13.0
 espressif__lan867x: 2.0.0
 espressif__lan86xx_common: 1.0.0

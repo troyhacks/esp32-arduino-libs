@@ -8,14 +8,17 @@
 
 #include "esp_idf_version.h"
 
-#if ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 3, 1)
-#error ESP-IDF version used is not supported
-#endif
-
 #if CONFIG_ESP_HOSTED_ENABLE_ITWT && CONFIG_SLAVE_SOC_WIFI_HE_SUPPORT
   #define H_WIFI_HE_SUPPORT 1
 #else
   #define H_WIFI_HE_SUPPORT 0
+#endif
+
+// HE support (structs, API) changed after ESP-IDF v5.3
+#if H_WIFI_HE_SUPPORT && (ESP_IDF_VERSION > ESP_IDF_VERSION_VAL(5, 3, 0))
+  #define H_WIFI_HE_GREATER_THAN_ESP_IDF_5_3 1
+#else
+  #define H_WIFI_HE_GREATER_THAN_ESP_IDF_5_3 0
 #endif
 
 #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 4, 0)
@@ -99,9 +102,13 @@
  * Wi-Fi Easy Connect (DPP) events is returned to user via
  * Supplicant Callback or Wi-Fi DPP events,
  * depending on IDF version
+ *
+ * IDF v6.0 and above only support Wi-Fi DPP events
+ * IDF v5.5 support Wi-Fi and Supplicant DPP events
+ * earlier versions support only Supplicant DPP events
  */
 // Supplicant Callback DPP Events: still available, but deprecated
-#if CONFIG_ESP_HOSTED_ENABLE_DPP
+#if CONFIG_ESP_HOSTED_ENABLE_DPP && (ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(6, 0, 0))
 #define H_SUPP_DPP_SUPPORT 1
 #else
 #define H_SUPP_DPP_SUPPORT 0
