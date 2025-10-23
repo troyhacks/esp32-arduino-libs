@@ -1337,7 +1337,7 @@ CONFIG_BLE_MESH_DISCARD_OLD_SEQ_AUTH=y
 #
 # Legacy I2C Driver Configurations
 #
-# CONFIG_I2C_SKIP_LEGACY_CONFLICT_CHECK is not set
+CONFIG_I2C_SKIP_LEGACY_CONFLICT_CHECK=y
 # end of Legacy I2C Driver Configurations
 
 #
