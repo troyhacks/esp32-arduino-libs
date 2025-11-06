@@ -364,6 +364,20 @@ dependencies:
     targets:
     - esp32p4
     version: 1.0.1
+  waveshare/esp_lcd_touch_cst9217:
+    component_hash: c5da844e73ab7b7e02938901e71f38deed94b26976045fb4517e7fc1e8dc4db5
+    dependencies:
+    - name: espressif/esp_lcd_touch
+      registry_url: https://components.espressif.com
+      require: public
+      version: ^1.1.0
+    - name: idf
+      require: private
+      version: '>=4.4.2'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 1.0.3
 direct_dependencies:
 - chmorgan/esp-libhelix-mp3
 - espressif/esp-dsp
@@ -382,6 +396,7 @@ direct_dependencies:
 - joltwallet/littlefs
 - waveshare/esp_lcd_jd9365_10_1
 - waveshare/esp_lcd_st7703
-manifest_hash: 27c36127eb61e01d0fbce6c931171086114930e3bdb934df3d9fe56c6b45b87e
+- waveshare/esp_lcd_touch_cst9217
+manifest_hash: 2751e5b12813d71ee0f0d92b5f46db3d4ff748af56d3b403281214e8cb998a4c
 target: esp32p4
 version: 2.0.0

@@ -1,7 +1,7 @@
 lib-builder: master 24e5658
 esp-idf: 129cd0d247
-arduino: master 0b6e560d7
-tinyusb: master 58b410401
+arduino: master 731aee279
+tinyusb: master 6641550f5
 chmorgan__esp-libhelix-mp3: 1.0.3
 espressif__cmake_utilities: 0.5.3
 espressif__eppp_link: 1.1.3
@@ -29,3 +29,4 @@ espressif__usb_host_msc: 1.1.4
 joltwallet__littlefs: 1.20.1
 waveshare__esp_lcd_jd9365_10_1: 1.0.3
 waveshare__esp_lcd_st7703: 1.0.1
+waveshare__esp_lcd_touch_cst9217: 1.0.3
