@@ -241,20 +241,6 @@ dependencies:
       registry_url: https://components.espressif.com/
       type: service
     version: 0.7.0
-  espressif/i2c_bus:
-    component_hash: 4e990dc11734316186b489b362c61d41f23f79d58bc169795cec215e528cba14
-    dependencies:
-    - name: espressif/cmake_utilities
-      registry_url: https://components.espressif.com
-      require: private
-      version: '*'
-    - name: idf
-      require: private
-      version: '>=4.0'
-    source:
-      registry_url: https://components.espressif.com
-      type: service
-    version: 1.5.0
   espressif/lan867x:
     component_hash: 651c9d6e3d96acb08bd5066144b12a12e94df0a6241127a0538d8680689de2c4
     dependencies:
@@ -328,26 +314,6 @@ dependencies:
       registry_url: https://components.espressif.com/
       type: service
     version: 1.20.2
-  waveshare/esp_lcd_jd9365_10_1:
-    component_hash: 148d03ade699a7fa0f08c98e86c1df3d32e92580fac421c04e0ee5b779e86267
-    dependencies:
-    - name: espressif/cmake_utilities
-      registry_url: https://components.espressif.com
-      require: private
-      version: 0.*
-    - name: espressif/i2c_bus
-      registry_url: https://components.espressif.com
-      require: private
-      version: ^1.3.0
-    - name: idf
-      require: private
-      version: '>=5.3'
-    source:
-      registry_url: https://components.espressif.com/
-      type: service
-    targets:
-    - esp32p4
-    version: 1.0.3
   waveshare/esp_lcd_st7703:
     component_hash: 77914ac97bb0094578131f147ef122fc73f42b2300d9e4c08056ed25799b8ee8
     dependencies:
@@ -364,20 +330,6 @@ dependencies:
     targets:
     - esp32p4
     version: 1.0.1
-  waveshare/esp_lcd_touch_cst9217:
-    component_hash: c5da844e73ab7b7e02938901e71f38deed94b26976045fb4517e7fc1e8dc4db5
-    dependencies:
-    - name: espressif/esp_lcd_touch
-      registry_url: https://components.espressif.com
-      require: public
-      version: ^1.1.0
-    - name: idf
-      require: private
-      version: '>=4.4.2'
-    source:
-      registry_url: https://components.espressif.com/
-      type: service
-    version: 1.0.3
 direct_dependencies:
 - chmorgan/esp-libhelix-mp3
 - espressif/esp-dsp
@@ -394,9 +346,7 @@ direct_dependencies:
 - espressif/usb_host_msc
 - idf
 - joltwallet/littlefs
-- waveshare/esp_lcd_jd9365_10_1
 - waveshare/esp_lcd_st7703
-- waveshare/esp_lcd_touch_cst9217
-manifest_hash: e6fe90b64e331dd3d958872a4bc7183cd75f6f8bdefd5722a478a4b6bf0c0c63
+manifest_hash: fc491ccf0b000c2c2e95e9826c8ef4d158d952482b57c3468768cc0edfc6c1bf
 target: esp32p4
 version: 2.0.0
