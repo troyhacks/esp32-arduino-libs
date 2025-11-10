@@ -1,8 +1,17 @@
-/*
- * SPDX-FileCopyrightText: 2015-2025 Espressif Systems (Shanghai) CO LTD
- *
- * SPDX-License-Identifier: Apache-2.0
- */
+// SPDX-License-Identifier: Apache-2.0
+// Copyright 2015-2021 Espressif Systems (Shanghai) PTE LTD
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 /*prevent recursive inclusion */
 #ifndef __SERIAL_LL_IF_H
@@ -14,7 +23,7 @@ extern "C" {
 
 /** includes **/
 #include "transport_drv.h"
-#include "port_esp_hosted_host_os.h"
+#include "os_wrapper.h"
 
 struct serial_ll_operations;
 
@@ -69,7 +78,7 @@ struct serial_ll_operations {
 	 * @param  serial_ll_hdl - handle
 	 *         wlen - number of bytes to write
 	 *         wbuffer - buffer to send
-	 * @retval 0 on success, -1 on failure
+	 * @retval STM_FAIL/STM_OK
 	 */
 	int        (*write) (const serial_ll_handle_t * serial_ll_hdl,
 		uint8_t * wbuffer, const uint16_t wlen);
@@ -90,7 +99,7 @@ struct serial_ll_operations {
   */
 serial_ll_handle_t * serial_ll_init(void(*rx_data_ind)(void));
 
-int serial_ll_rx_handler(interface_buffer_handle_t * buf_handle);
+stm_ret_t serial_ll_rx_handler(interface_buffer_handle_t * buf_handle);
 #ifdef __cplusplus
 }
 #endif
