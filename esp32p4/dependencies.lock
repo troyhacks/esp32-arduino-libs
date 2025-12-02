@@ -326,12 +326,12 @@ dependencies:
       type: service
     version: 0.7.2
   espressif/gmf_core:
-    component_hash: 244a6ccddb77b001600ec80f311647044c235e50c227db739abeb42d763f862f
+    component_hash: a624f93a2835f5ce94c238f75c465d3fe95b34be80d306c634c3dfda4a39316f
     dependencies: []
     source:
       registry_url: https://components.espressif.com
       type: service
-    version: 0.7.5
+    version: 0.7.6
   espressif/gmf_video:
     component_hash: f846518801ae7e748ecde24e5ac4b21518ca42fffb533b9d9d67a4cd7ed2c3b8
     dependencies:
@@ -481,6 +481,6 @@ direct_dependencies:
 - idf
 - joltwallet/littlefs
 - waveshare/esp_lcd_st7703
-manifest_hash: 5af3d0652ddc7372d8e191d0dff168e26461bccd0e7b492989bf25988e3a782a
+manifest_hash: ad4dec575a3c91f4b24bebb9180067b1a2cb510adc37f12b00b475e28848a8b9
 target: esp32p4
 version: 2.0.0
